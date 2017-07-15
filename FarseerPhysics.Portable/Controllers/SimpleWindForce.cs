@@ -1,5 +1,5 @@
 ﻿using FarseerPhysics.Dynamics;
-using Microsoft.Xna.Framework;
+using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Controllers
 {

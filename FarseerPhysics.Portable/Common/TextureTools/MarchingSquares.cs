@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using FarseerPhysics.Collision;
-using Microsoft.Xna.Framework;
+using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Common.TextureTools
 {
