@@ -47,7 +47,7 @@
     <Compile Include="FarseerToMonogameExtensions.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="IUpdateable.cs" />
-    <Compile Include="IVisualizationHolder.cs" />
+    <Compile Include="IVisualizationComponent.cs" />
     <Compile Include="MindvolvingVisualization.cs" />
     <Compile Include="Organism\Body.cs" />
     <Compile Include="Organism\BodyPart.cs" />
