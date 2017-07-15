@@ -5,14 +5,12 @@ namespace Mindvolving.Visualization.Renderers
 {
     public class BoneRenderer : IRenderable
     {
-        private Skeleton skeleton;
-
         public MindvolvingVisualization Visualization { get; set; }
         public Bone Current { get; internal set; }
 
-        public BoneRenderer(Skeleton skeleton)
+        public BoneRenderer()
         {
-            this.skeleton = skeleton;
+
         }
 
         public void Draw(GameTime gt)

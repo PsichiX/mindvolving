@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
 using System;
+using Microsoft.Xna.Framework;
 
 namespace Mindvolving.Visualization.Engine.Input
 {
@@ -9,6 +10,9 @@ namespace Mindvolving.Visualization.Engine.Input
         private Dictionary<string, Keys> mappings;
 
         public MindvolvingVisualization Visualization { get; set; }
+        public Point MousePosition { get { return Mouse.GetState().Position; } }
+        public MouseState MouseState { get { return Mouse.GetState(); } }
+        public KeyboardState KeyboardState { get { return Keyboard.GetState(); } }
 
         public InputManager()
         {
@@ -32,5 +36,6 @@ namespace Mindvolving.Visualization.Engine.Input
         {
             return Keyboard.GetState().IsKeyUp(mappings[action]);
         }
+
     }
 }
