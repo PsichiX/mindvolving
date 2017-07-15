@@ -5,6 +5,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Mindvolving.Visualization.Renderers;
+using FarseerPhysics.Factories;
+using FarseerPhysics.Dynamics.Joints;
 
 namespace Mindvolving.Visualization
 {
@@ -14,6 +16,7 @@ namespace Mindvolving.Visualization
         private Organism.Body body;
         private World world;
         private BodyRenderer bodyRenderer;
+        private DebugViewRenderer debugViewRenderer;
 
         public SpriteBatch SpriteBatch { get; private set; }
         public TextureManager Textures { get; private set; }
@@ -69,38 +72,27 @@ namespace Mindvolving.Visualization
             //    Gravity = new Jitter.LinearMath.JVector(0, 100, 0)
             //};
 
-            world = new World(new FPCommon.Vector2(0, 1));
-
-            var rigidBody1 = new Body(world);
+            world = new World(new FPCommon.Vector2(0, 100));
+            debugViewRenderer = new DebugViewRenderer(world);
+            debugViewRenderer.LoadContent(GraphicsDevice, Content);
+            
+            var rigidBody1 = BodyFactory.CreateBody(world, new FPCommon.Vector2(200, 200), 0, BodyType.Dynamic);
             rigidBody1.CreateFixture(new CircleShape(20, 1));
-            var rigidBody2 = new Body(world);
+            var rigidBody2 = BodyFactory.CreateBody(world, new FPCommon.Vector2(120, 20), 0, BodyType.Dynamic);
             rigidBody2.CreateFixture(new CircleShape(30, 1));
-            var rigidBody3 = new Body(world);
+            var rigidBody3 = BodyFactory.CreateBody(world, new FPCommon.Vector2(100, 100), 0, BodyType.Static);
             rigidBody3.CreateFixture(new CircleShape(40, 1));
-            var rigidBody4 = new Body(world);
+            var rigidBody4 = BodyFactory.CreateBody(world, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
             rigidBody4.CreateFixture(new CircleShape(50, 1));
-
-            rigidBody1.Position = new FPCommon.Vector2(200, 200);
-            rigidBody2.Position = new FPCommon.Vector2(100, 30);
-            rigidBody3.Position = new FPCommon.Vector2(100, 100);
-            rigidBody4.Position = new FPCommon.Vector2(200, 100);
-
-            //rigidBody3.IsStatic = true;
-
-            //rigidBody1.EnableDebugDraw = true;
-            //rigidBody2.EnableDebugDraw = true;
-            //rigidBody3.EnableDebugDraw = true;
-            //rigidBody4.EnableDebugDraw = true;
-
-            //world.AddBody(rigidBody1);
-            //world.AddBody(rigidBody2);
-            //world.AddBody(rigidBody3);
-            //world.AddBody(rigidBody4);
 
             a1.RigidBody = rigidBody1;
             a2.RigidBody = rigidBody2;
             a3.RigidBody = rigidBody3;
             a4.RigidBody = rigidBody4;
+
+            world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1 });
+            world.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1 });
+            world.AddJoint(new DistanceJoint(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position, true) { DampingRatio = 1 });
 
             //world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position) { Softness = 0f });
             //world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position) { Softness = 0f });
@@ -110,7 +102,7 @@ namespace Mindvolving.Visualization
             //world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody1, rigidBody4, rigidBody1.Position, rigidBody4.Position) { Softness = 0.01f });
             //world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody2, rigidBody3, rigidBody2.Position, rigidBody3.Position) { Softness = 0.01f });
             //world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody3, rigidBody4, rigidBody3.Position, rigidBody4.Position) { Softness = 0.01f });
-           
+
 
             Textures.LoadContent();
         }
@@ -125,7 +117,7 @@ namespace Mindvolving.Visualization
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            //world.Step(1 / 60f);
+            world.Step(1 / 60f);
 
             base.Update(gameTime);
         }
@@ -134,9 +126,14 @@ namespace Mindvolving.Visualization
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
+            Matrix proj = Matrix.CreateOrthographicOffCenter(0f, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0f, 0f, 1f);
+            Matrix view = Matrix.Identity;
+
+            debugViewRenderer.RenderDebugData(proj, view);
+
             SpriteBatch.Begin();
 
-            bodyRenderer.Draw(gameTime);
+            //bodyRenderer.Draw(gameTime);
 
             //Primitive2DRenderer.DebugPrintColor = Color.Green;
 

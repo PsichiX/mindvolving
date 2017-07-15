@@ -42,7 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="FPVector2Extensions.cs" />
+    <Compile Include="FarseerToMonogameExtensions.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="IUpdateable.cs" />
     <Compile Include="IVisualizationHolder.cs" />
@@ -60,6 +60,7 @@
     <Compile Include="Renderers\DebugViewRenderer.cs" />
     <Compile Include="Renderers\MuscleRenderer.cs" />
     <Compile Include="Renderers\Primitive2DRenderer.cs" />
+    <Compile Include="Renderers\PrimitiveBatch.cs" />
     <Compile Include="Renderers\SkeletonRenderer.cs" />
     <Compile Include="TextureManager.cs" />
   </ItemGroup>
