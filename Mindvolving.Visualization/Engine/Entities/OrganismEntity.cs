@@ -2,7 +2,12 @@
 {
     public class OrganismEntity : Entity
     {
-        public Organism.Body OrganicBody { get; private set; }
+        public Organism.Body OrganicBody { get; set; }
+
+        public OrganismEntity()
+        {
+            
+        }
 
         public override void Initialize()
         {

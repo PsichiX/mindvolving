@@ -12,6 +12,7 @@ namespace Mindvolving.Visualization.Engine.Entities
         public void BeginCreation(World world)
         {
             entity = new OrganismEntity();
+            entity.OrganicBody = new Organism.Body();
         }
 
         public void AddBodyPart(Physics.Dynamics.Body physicalBodyPart)

@@ -8,7 +8,9 @@ namespace Mindvolving.Visualization.Engine.Entities
         public World World { get; set; }
 
         public Physics.Dynamics.Body PhysicalBody { get; private set; }
-        
+        public IRenderable Renderer { get; protected set; }
+        public Vector2 Position { get { return PhysicalBody.Position.ToMGVector2(); } }
+
         public virtual void Initialize()
         {
 
