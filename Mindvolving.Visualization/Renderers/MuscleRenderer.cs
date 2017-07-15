@@ -8,14 +8,12 @@ namespace Mindvolving.Visualization.Renderers
 {
     public class MuscleRenderer : IRenderable
     {
-        private Body body;
-
         public MindvolvingVisualization Visualization { get; set; }
         public Muscle Current { get; set; }
 
-        public MuscleRenderer(Body body)
+        public MuscleRenderer()
         {
-            this.body = body;
+
         }
 
         public void Draw(GameTime gt)

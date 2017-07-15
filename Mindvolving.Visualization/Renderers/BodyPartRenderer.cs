@@ -8,14 +8,11 @@ namespace Mindvolving.Visualization.Renderers
 {
     public class BodyPartRenderer : IRenderable
     {
-        private Body body;
-
         public MindvolvingVisualization Visualization { get; set; }
         public BodyPart Current { get; set; }
 
-        public BodyPartRenderer(Body body)
+        public BodyPartRenderer()
         {
-            this.body = body;
             Current = null;
         }
 

@@ -99,7 +99,7 @@ namespace Mindvolving.Visualization
         private void PreparePhisycsTestScene()
         {
             body = new Organism.Body();
-            bodyRenderer = CreateVisualizationComponent(() => new BodyRenderer(body));
+            bodyRenderer = CreateVisualizationComponent<BodyRenderer>();
 
             var a1 = body.CreateBodyPart();
             var a2 = body.CreateBodyPart();
