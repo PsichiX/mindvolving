@@ -22,9 +22,11 @@ namespace Mindvolving.Visualization.Organism
             return part;
         }
 
-        public void CreateMuscle(BodyPart part1, BodyPart part2)
+        public Muscle CreateMuscle(BodyPart part1, BodyPart part2)
         {
-            Muscles.Add(new Muscle(part1, part2));
+            Muscle muscle = new Muscle(part1, part2);
+            Muscles.Add(muscle);
+            return muscle;
         }
     }
 }

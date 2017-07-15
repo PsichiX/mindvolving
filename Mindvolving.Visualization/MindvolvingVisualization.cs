@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using FPCommon = FarseerPhysics.Common;
+using Physics = FarseerPhysics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -24,7 +25,7 @@ namespace Mindvolving.Visualization
         public SpriteBatch SpriteBatch { get; private set; }
         public TextureManager Textures { get; private set; }
         public Primitive2DRenderer Primitive2DRenderer { get; private set; }
-        public World World { get; private set; }
+        public Physics.Dynamics.World World { get; private set; }
         public Camera Camera { get; private set; }
         public InputManager InputManager { get; private set; }
 
@@ -62,7 +63,8 @@ namespace Mindvolving.Visualization
             Textures = CreateVisualizationComponent<TextureManager>();
             Primitive2DRenderer = CreateVisualizationComponent<Primitive2DRenderer>();
 
-            World = new World(new FPCommon.Vector2(0, 0));
+            World = new Physics.Dynamics.World(new FPCommon.Vector2(0, 0));
+            PreparePhisycsTestScene();
 
             Textures.LoadContent();
 
@@ -123,10 +125,10 @@ namespace Mindvolving.Visualization
             var rigidBody4 = BodyFactory.CreateBody(World, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
             rigidBody4.CreateFixture(new CircleShape(50, 1));
 
-            a1.RigidBody = rigidBody1;
-            a2.RigidBody = rigidBody2;
-            a3.RigidBody = rigidBody3;
-            a4.RigidBody = rigidBody4;
+            a1.PhysicalBody = rigidBody1;
+            a2.PhysicalBody = rigidBody2;
+            a3.PhysicalBody = rigidBody3;
+            a4.PhysicalBody = rigidBody4;
 
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1 });
             //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1 });

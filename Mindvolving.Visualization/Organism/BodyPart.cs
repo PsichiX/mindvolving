@@ -6,8 +6,8 @@ namespace Mindvolving.Visualization.Organism
     {
         private Body body;
 
-        public Vector2 Position { get { return RigidBody.Position.ToMGVector2(); } }
-        public FarseerPhysics.Dynamics.Body RigidBody { get; set; }
+        public Vector2 Position { get { return PhysicalBody.Position.ToMGVector2(); } }
+        public FarseerPhysics.Dynamics.Body PhysicalBody { get; set; }
 
         public BodyPart(Body body)
         {
