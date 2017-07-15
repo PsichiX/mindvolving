@@ -1,0 +1,30 @@
+﻿using System;
+using Microsoft.Xna.Framework;
+using Mindvolving.Visualization.Organism;
+
+namespace Mindvolving.Visualization.Renderers
+{
+    public class SkeletonRenderer : IRenderable
+    {
+        private Skeleton skeleton;
+        private BoneRenderer boneRenderer;
+
+        public MindvolvingVisualization Visualization { get; set; }
+
+        public SkeletonRenderer(Skeleton skeleton)
+        {
+            this.skeleton = skeleton;
+            boneRenderer = new BoneRenderer(skeleton);
+        }
+
+        public void Draw(GameTime gt)
+        {
+
+        }
+
+        public void Initialize()
+        {
+            boneRenderer.Visualization = Visualization;
+        }
+    }
+}
