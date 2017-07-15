@@ -9,18 +9,23 @@ namespace Mindvolving.Visualization.Renderers
         private BoneRenderer boneRenderer;
 
         public MindvolvingVisualization Visualization { get; set; }
-        public Skeleton Current { get; set; }
+        public Skeleton Skeleton { get; set; }
 
         public SkeletonRenderer()
         {
             boneRenderer = new BoneRenderer();
         }
 
+        public SkeletonRenderer(Skeleton skeleton)
+        {
+            Skeleton = skeleton;
+        }
+
         public void Draw(GameTime gt)
         {
-            foreach(Bone bone in Current.Bones)
+            foreach(Bone bone in Skeleton.Bones)
             {
-                boneRenderer.Current = bone;
+                boneRenderer.Bone = bone;
                 boneRenderer.Draw(gt);
             }
         }

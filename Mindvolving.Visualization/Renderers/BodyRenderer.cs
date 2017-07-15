@@ -11,7 +11,7 @@ namespace Mindvolving.Visualization.Renderers
         private SkeletonRenderer skeletonRenderer;
 
         public MindvolvingVisualization Visualization { get; set; }
-        public Body Current { get; set; }
+        public Body Body { get; set; }
 
         public BodyRenderer()
         {
@@ -19,22 +19,28 @@ namespace Mindvolving.Visualization.Renderers
             muscleRenderer = new MuscleRenderer();
             skeletonRenderer = new SkeletonRenderer();
         }
-    
+
+        public BodyRenderer(Body body)
+            : this()
+        {
+            Body = body;
+        }
+
         public void Draw(GameTime gt)
         {
-            foreach (BodyPart part in Current.BodyParts)
+            foreach (BodyPart part in Body.BodyParts)
             {
-                bodyPartRenderer.Current = part;
+                bodyPartRenderer.BodyPart = part;
                 bodyPartRenderer.Draw(gt);
             }
 
-            foreach (Muscle muscle in Current.Muscles)
+            foreach (Muscle muscle in Body.Muscles)
             {
-                muscleRenderer.Current = muscle;
+                muscleRenderer.Muscle = muscle;
                 muscleRenderer.Draw(gt);
             }
 
-            skeletonRenderer.Current = Current.Skeleton;
+            skeletonRenderer.Skeleton = Body.Skeleton;
             skeletonRenderer.Draw(gt);
         }
 
