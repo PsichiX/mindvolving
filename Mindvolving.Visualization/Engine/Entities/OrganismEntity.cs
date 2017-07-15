@@ -1,6 +1,6 @@
 ﻿namespace Mindvolving.Visualization.Engine.Entities
 {
-    public class OrganicEntity : Entity
+    public class OrganismEntity : Entity
     {
         public Organism.Body OrganicBody { get; private set; }
 

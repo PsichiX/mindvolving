@@ -1,6 +1,8 @@
-﻿namespace Mindvolving.Visualization.Engine
+﻿using Microsoft.Xna.Framework;
+
+namespace Mindvolving.Visualization.Engine
 {
-    public interface IWorldElement
+    public interface IWorldElement : IUpdateable
     {
         World World { get; set; }
 

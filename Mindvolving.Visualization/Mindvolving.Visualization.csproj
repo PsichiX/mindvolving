@@ -44,11 +44,11 @@
   <ItemGroup>
     <Compile Include="Engine\Camera.cs" />
     <Compile Include="Engine\Entities\Entity.cs" />
-    <Compile Include="Engine\Entities\OrganicEntityFactory.cs" />
+    <Compile Include="Engine\Entities\OrganismEntityFactory.cs" />
     <Compile Include="Engine\IWorldElement.cs" />
     <Compile Include="Engine\World.cs" />
     <Compile Include="Engine\Entities\Food.cs" />
-    <Compile Include="Engine\Entities\OrganicEntity.cs" />
+    <Compile Include="Engine\Entities\OrganismEntity.cs" />
     <Compile Include="Engine\Input\InputManager.cs" />
     <Compile Include="FarseerToMonogameExtensions.cs" />
     <Compile Include="IRenderable.cs" />
@@ -65,6 +65,7 @@
     <Compile Include="Renderers\BodyPartRenderer.cs" />
     <Compile Include="Renderers\BodyRenderer.cs" />
     <Compile Include="Renderers\BoneRenderer.cs" />
+    <Compile Include="Renderers\CompoundRenderer.cs" />
     <Compile Include="Renderers\DebugViewRenderer.cs" />
     <Compile Include="Renderers\MuscleRenderer.cs" />
     <Compile Include="Renderers\Primitive2DRenderer.cs" />
@@ -144,7 +145,9 @@
       <Name>Mindvolving</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Renderers\Entities\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />
   <PropertyGroup>
