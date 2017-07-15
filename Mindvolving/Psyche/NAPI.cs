@@ -3,31 +3,27 @@ using System.Runtime.InteropServices;
 
 namespace Mindvolving.Psyche
 {
-	public static class NAPI
-	{
-		public enum BindingsMode
-		{
-			Pinvoke,
-			DynamicLinking
-		}
-
-		private const string LibName = "psi-engine";
-		public const BindingsMode Bindings = BindingsMode.Pinvoke;
-
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void BrainCallback(
+	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+	public delegate void BrainCallback(
 			IntPtr session,
 			IntPtr brain
 		);
 
-		[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-		public delegate void BrainSerializeCallback(
-			IntPtr brain,
-			IntPtr data,
-			[MarshalAs(UnmanagedType.I4)]
+	[UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+	public delegate void BrainSerializeCallback(
+		IntPtr brain,
+		IntPtr data,
+		[MarshalAs(UnmanagedType.I4)]
 			int size
-		);
+	);
 
+	internal static class NAPI
+	{
+#if DEBUG
+		private const string LibName = "psi-engine-d";
+#else
+		private const string LibName = "psi-engine";
+#endif
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
 		[return: MarshalAs(UnmanagedType.LPStr)]
 		public extern static string SessionCreate();
@@ -142,6 +138,14 @@ namespace Mindvolving.Psyche
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
 		[return: MarshalAs(UnmanagedType.I8)]
 		public extern static bool BrainDestroy(
+			[MarshalAs(UnmanagedType.LPStr)]
+			string suid,
+			[MarshalAs(UnmanagedType.LPStr)]
+			string buid
+		);
+
+		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+		public extern static IntPtr BrainGet(
 			[MarshalAs(UnmanagedType.LPStr)]
 			string suid,
 			[MarshalAs(UnmanagedType.LPStr)]
