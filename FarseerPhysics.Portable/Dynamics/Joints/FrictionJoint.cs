@@ -21,7 +21,7 @@
 */
 
 using FarseerPhysics.Common;
-using Microsoft.Xna.Framework;
+using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Dynamics.Joints
 {
