@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
+using FPCommon = FarseerPhysics.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -68,7 +69,7 @@ namespace Mindvolving.Visualization
             //    Gravity = new Jitter.LinearMath.JVector(0, 100, 0)
             //};
 
-            world = new World(new Vector2(0, 1));
+            world = new World(new FPCommon.Vector2(0, 1));
 
             var rigidBody1 = new Body(world);
             rigidBody1.CreateFixture(new CircleShape(20, 1));
@@ -79,10 +80,10 @@ namespace Mindvolving.Visualization
             var rigidBody4 = new Body(world);
             rigidBody4.CreateFixture(new CircleShape(50, 1));
 
-            rigidBody1.Position = new Vector2(200, 200);
-            rigidBody2.Position = new Vector2(100, 30);
-            rigidBody3.Position = new Vector2(100, 100);
-            rigidBody4.Position = new Vector2(200, 100);
+            rigidBody1.Position = new FPCommon.Vector2(200, 200);
+            rigidBody2.Position = new FPCommon.Vector2(100, 30);
+            rigidBody3.Position = new FPCommon.Vector2(100, 100);
+            rigidBody4.Position = new FPCommon.Vector2(200, 100);
 
             //rigidBody3.IsStatic = true;
 
@@ -135,7 +136,7 @@ namespace Mindvolving.Visualization
 
             SpriteBatch.Begin();
 
-            //bodyRenderer.Draw(gameTime);
+            bodyRenderer.Draw(gameTime);
 
             //Primitive2DRenderer.DebugPrintColor = Color.Green;
 

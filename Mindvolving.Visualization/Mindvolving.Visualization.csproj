@@ -42,6 +42,7 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="FPVector2Extensions.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="IUpdateable.cs" />
     <Compile Include="IVisualizationHolder.cs" />
@@ -122,6 +123,10 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\FarseerPhysics.Portable\FarseerPhysics.Portable.csproj">
+      <Project>{9b3b4d0f-dcab-4b2f-bea4-5ede374e78fc}</Project>
+      <Name>FarseerPhysics.Portable</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Mindvolving\Mindvolving.csproj">
       <Project>{072d2bea-b5bc-4cc4-af45-d23f519de5df}</Project>
       <Name>Mindvolving</Name>
