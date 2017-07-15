@@ -24,7 +24,7 @@ namespace Mindvolving.Visualization.Renderers.Entities
 
         public void Initialize()
         {
-            bodyRenderer.Current = Entity.OrganicBody;
+            bodyRenderer.Body = Entity.OrganicBody;
         }
     }
 }
