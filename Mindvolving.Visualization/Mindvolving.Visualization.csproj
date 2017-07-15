@@ -43,6 +43,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Camera.cs" />
+    <Compile Include="Engine\Entities\Entity.cs" />
+    <Compile Include="Engine\Entities\OrganicEntityFactory.cs" />
+    <Compile Include="Engine\IWorldElement.cs" />
+    <Compile Include="Engine\World.cs" />
+    <Compile Include="Engine\Entities\Food.cs" />
+    <Compile Include="Engine\Entities\OrganicEntity.cs" />
     <Compile Include="Engine\Input\InputManager.cs" />
     <Compile Include="FarseerToMonogameExtensions.cs" />
     <Compile Include="IRenderable.cs" />

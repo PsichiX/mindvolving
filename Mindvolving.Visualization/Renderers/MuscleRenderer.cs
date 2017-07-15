@@ -20,8 +20,8 @@ namespace Mindvolving.Visualization.Renderers
 
         public void Draw(GameTime gt)
         {
-            CircleShape circle1 = Current.Part1.RigidBody.FixtureList.Select(p => p.Shape).Where(p => p is CircleShape).Cast<CircleShape>().FirstOrDefault();
-            CircleShape circle2 = Current.Part2.RigidBody.FixtureList.Select(p => p.Shape).Where(p => p is CircleShape).Cast<CircleShape>().FirstOrDefault();
+            CircleShape circle1 = Current.Part1.PhysicalBody.FixtureList.Select(p => p.Shape).Where(p => p is CircleShape).Cast<CircleShape>().FirstOrDefault();
+            CircleShape circle2 = Current.Part2.PhysicalBody.FixtureList.Select(p => p.Shape).Where(p => p is CircleShape).Cast<CircleShape>().FirstOrDefault();
 
             if (circle1 != null && circle2 != null)
             {
