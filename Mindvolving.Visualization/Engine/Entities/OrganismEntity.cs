@@ -1,4 +1,6 @@
-﻿namespace Mindvolving.Visualization.Engine.Entities
+﻿using FarseerPhysics.Factories;
+
+namespace Mindvolving.Visualization.Engine.Entities
 {
     public class OrganismEntity : Entity
     {
