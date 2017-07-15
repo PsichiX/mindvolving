@@ -6,16 +6,21 @@ namespace Mindvolving.Visualization.Renderers
     public class BoneRenderer : IRenderable
     {
         public MindvolvingVisualization Visualization { get; set; }
-        public Bone Current { get; internal set; }
+        public Bone Bone { get; set; }
 
         public BoneRenderer()
         {
 
         }
 
+        public BoneRenderer(Bone bone)
+        {
+            Bone = bone;
+        }
+
         public void Draw(GameTime gt)
         {
-            Visualization.Primitive2DRenderer.DrawLine(Current.Part1.Position, Current.Part2.Position, Color.Blue);
+            Visualization.Primitive2DRenderer.DrawLine(Bone.Part1.Position, Bone.Part2.Position, Color.Blue);
         }
 
         public void Initialize()
