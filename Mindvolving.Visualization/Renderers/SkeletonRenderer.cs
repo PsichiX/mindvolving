@@ -29,6 +29,8 @@ namespace Mindvolving.Visualization.Renderers
         public void Initialize()
         {
             boneRenderer.Visualization = Visualization;
+
+            boneRenderer.Initialize();
         }
     }
 }

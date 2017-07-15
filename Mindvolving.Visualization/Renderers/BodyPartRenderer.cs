@@ -24,7 +24,7 @@ namespace Mindvolving.Visualization.Renderers
             {
                 SphereShape sphere = (SphereShape)Current.RigidBody.Shape;
 
-                Visualization.Primitive2DRenderer.FillCircle(Current.Position, (int)sphere.Radius, Color.Black);
+                Visualization.Primitive2DRenderer.FillCircle(Current.Position, (int)sphere.Radius, Color.Black, new Vector2(0.5f, 0.5f));
             }
         }
 

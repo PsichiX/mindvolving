@@ -43,6 +43,10 @@ namespace Mindvolving.Visualization.Renderers
             bodyPartRenderer.Visualization = Visualization;
             muscleRenderer.Visualization = Visualization;
             skeletonRenderer.Visualization = Visualization;
+
+            bodyPartRenderer.Initialize();
+            muscleRenderer.Initialize();
+            skeletonRenderer.Initialize();
         }
     }
 }

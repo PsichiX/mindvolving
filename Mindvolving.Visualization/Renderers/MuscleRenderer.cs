@@ -36,7 +36,7 @@ namespace Mindvolving.Visualization.Renderers
 
         public void Initialize()
         {
-
+            
         }
     }
 }
