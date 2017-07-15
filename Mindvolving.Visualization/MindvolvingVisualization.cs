@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Mindvolving.Visualization.Renderers;
 
 namespace Mindvolving.Visualization
 {
@@ -10,6 +11,8 @@ namespace Mindvolving.Visualization
 
         public SpriteBatch SpriteBatch { get; private set; }
         public TextureManager Textures { get; private set; }
+        public Primitive2DRenderer Primitive2DRenderer { get; private set; }
+
 
         public MindvolvingVisualization()
         {
@@ -28,6 +31,8 @@ namespace Mindvolving.Visualization
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             Textures = new TextureManager(this);
+            Primitive2DRenderer = new Primitive2DRenderer();
+            Primitive2DRenderer.Visualization = this;
 
             Textures.LoadContent();
         }

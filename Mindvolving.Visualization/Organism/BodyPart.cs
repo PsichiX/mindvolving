@@ -1,10 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using Microsoft.Xna.Framework;
 
 namespace Mindvolving.Visualization.Organism
 {
     public class BodyPart
     {
         private Body body;
+
+        public Vector2 Position { get { return RigidBody.Position.ToVector2(); } }
+        public Jitter.Dynamics.RigidBody RigidBody { get; private set; }
 
         public BodyPart(Body body)
         {

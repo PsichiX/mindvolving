@@ -4,18 +4,18 @@ namespace Mindvolving.Visualization.Organism
 {
     public class Bone : IEquatable<Bone>
     {
-        private BodyPart part1;
-        private BodyPart part2;
+        public BodyPart Part1 { get; private set; }
+        public BodyPart Part2 { get; private set; }
 
         public Bone(BodyPart part1, BodyPart part2)
         {
-            this.part1 = part1;
-            this.part2 = part2;
+            this.Part1 = part1;
+            this.Part2 = part2;
         }
 
         public bool Equals(Bone other)
         {
-            return this.part1 == other.part1 && this.part2 == other.part2;
+            return this.Part1 == other.Part1 && this.Part2 == other.Part2;
         }
     }
 }

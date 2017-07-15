@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Mindvolving.Visualization.Organism;
 
 namespace Mindvolving.Visualization.Renderers
@@ -22,7 +17,7 @@ namespace Mindvolving.Visualization.Renderers
 
         public void Draw(GameTime gt)
         {
-
+            Visualization.Primitive2DRenderer.DrawLine(Current.Part1.Position, Current.Part2.Position, Color.Blue);
         }
 
         public void Initialize()
