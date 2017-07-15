@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Mindvolving.Visualization.Organism;
-using Jitter.Collision.Shapes;
+using FarseerPhysics.Collision.Shapes;
+using System.Linq;
 
 namespace Mindvolving.Visualization.Renderers
 {
@@ -20,11 +21,11 @@ namespace Mindvolving.Visualization.Renderers
 
         public void Draw(GameTime gt)
         {
-            if (Current.RigidBody.Shape is SphereShape)
-            {
-                SphereShape sphere = (SphereShape)Current.RigidBody.Shape;
+            CircleShape circle = Current.RigidBody.FixtureList.Select(p => p.Shape).Where(p => p is CircleShape).Cast<CircleShape>().FirstOrDefault();
 
-                Visualization.Primitive2DRenderer.FillCircle(Current.Position, (int)sphere.Radius, Color.Black, new Vector2(0.5f, 0.5f));
+            if (circle != null)
+            {
+                Visualization.Primitive2DRenderer.FillCircle(Current.Position, (int)circle.Radius, Color.Black, new Vector2(0.5f, 0.5f));
             }
         }
 

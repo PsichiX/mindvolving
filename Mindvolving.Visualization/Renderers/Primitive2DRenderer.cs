@@ -1,12 +1,10 @@
 ﻿using System;
-using Jitter.LinearMath;
-using Jitter;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Mindvolving.Visualization.Renderers
 {
-    public class Primitive2DRenderer : IVisualizationHolder, IDebugDrawer
+    public class Primitive2DRenderer : IVisualizationHolder
     {
         public MindvolvingVisualization Visualization { get; set; }
 
@@ -84,19 +82,19 @@ namespace Mindvolving.Visualization.Renderers
                           new Vector2(rectangle.Left, rectangle.Bottom));
         }
 
-        void IDebugDrawer.DrawLine(JVector start, JVector end)
-        {
-            DrawLine(start.ToVector2(), end.ToVector2(), DebugPrintColor);
-        }
+        //void IDebugDrawer.DrawLine(JVector start, JVector end)
+        //{
+        //    DrawLine(start.ToVector2(), end.ToVector2(), DebugPrintColor);
+        //}
 
-        void IDebugDrawer.DrawPoint(JVector pos)
-        {
-            DrawPoint(pos.ToVector2(), DebugPrintColor);
-        }
+        //void IDebugDrawer.DrawPoint(JVector pos)
+        //{
+        //    DrawPoint(pos.ToVector2(), DebugPrintColor);
+        //}
 
-        void IDebugDrawer.DrawTriangle(JVector pos1, JVector pos2, JVector pos3)
-        {
-            DrawTriangle(pos1.ToVector2(), pos2.ToVector2(), pos3.ToVector2(), DebugPrintColor);
-        }
+        //void IDebugDrawer.DrawTriangle(JVector pos1, JVector pos2, JVector pos3)
+        //{
+        //    DrawTriangle(pos1.ToVector2(), pos2.ToVector2(), pos3.ToVector2(), DebugPrintColor);
+        //}
     }
 }
