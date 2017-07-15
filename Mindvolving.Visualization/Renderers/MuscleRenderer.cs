@@ -9,6 +9,7 @@ namespace Mindvolving.Visualization.Renderers
         private Body body;
 
         public MindvolvingVisualization Visualization { get; set; }
+        public Muscle Current { get; set; }
 
         public MuscleRenderer(Body body)
         {

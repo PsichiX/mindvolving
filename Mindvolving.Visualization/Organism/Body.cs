@@ -8,6 +8,8 @@ namespace Mindvolving.Visualization.Organism
         public List<BodyPart> BodyParts { get; private set; }
         public Skeleton Skeleton { get; private set; }
 
+        public Jitter.Dynamics.RigidBody RigidBody { get; private set; }
+
         public Body()
         {
             BodyParts = new List<BodyPart>();

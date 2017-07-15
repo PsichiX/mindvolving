@@ -13,6 +13,7 @@ namespace Mindvolving.Visualization.Renderers
         private Skeleton skeleton;
 
         public MindvolvingVisualization Visualization { get; set; }
+        public Bone Current { get; internal set; }
 
         public BoneRenderer(Skeleton skeleton)
         {

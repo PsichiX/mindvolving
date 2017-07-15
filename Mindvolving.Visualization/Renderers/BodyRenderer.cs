@@ -23,8 +23,18 @@ namespace Mindvolving.Visualization.Renderers
     
         public void Draw(GameTime gt)
         {
-            bodyPartRenderer.Draw(gt);
-            muscleRenderer.Draw(gt);
+            foreach (BodyPart part in body.BodyParts)
+            {
+                bodyPartRenderer.Current = part;
+                bodyPartRenderer.Draw(gt);
+            }
+
+            foreach (Muscle muscle in body.Muscles)
+            {
+                muscleRenderer.Current = muscle;
+                muscleRenderer.Draw(gt);
+            }
+
             skeletonRenderer.Draw(gt);
         }
 

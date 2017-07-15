@@ -7,8 +7,10 @@ namespace Mindvolving.Visualization
     public class MindvolvingVisualization : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
-        
+
+        public SpriteBatch SpriteBatch { get; private set; }
+        public TextureManager Textures { get; private set; }
+
         public MindvolvingVisualization()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -24,7 +26,10 @@ namespace Mindvolving.Visualization
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+            Textures = new TextureManager(this);
+
+            Textures.LoadContent();
         }
 
         protected override void UnloadContent()

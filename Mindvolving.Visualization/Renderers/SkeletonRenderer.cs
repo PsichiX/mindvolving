@@ -19,7 +19,11 @@ namespace Mindvolving.Visualization.Renderers
 
         public void Draw(GameTime gt)
         {
-
+            foreach(Bone bone in skeleton.Bones)
+            {
+                boneRenderer.Current = bone;
+                boneRenderer.Draw(gt);
+            }
         }
 
         public void Initialize()

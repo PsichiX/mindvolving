@@ -44,6 +44,8 @@
   <ItemGroup>
     <Compile Include="IRenderable.cs" />
     <Compile Include="IUpdateable.cs" />
+    <Compile Include="IVisualizationHolder.cs" />
+    <Compile Include="JVectorExtensions.cs" />
     <Compile Include="MindvolvingVisualization.cs" />
     <Compile Include="Organism\Body.cs" />
     <Compile Include="Organism\BodyPart.cs" />
@@ -56,7 +58,9 @@
     <Compile Include="Renderers\BodyRenderer.cs" />
     <Compile Include="Renderers\BoneRenderer.cs" />
     <Compile Include="Renderers\MuscleRenderer.cs" />
+    <Compile Include="Renderers\Primitive2DRenderer.cs" />
     <Compile Include="Renderers\SkeletonRenderer.cs" />
+    <Compile Include="TextureManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Jitter, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
