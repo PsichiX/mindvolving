@@ -1,6 +1,6 @@
 ﻿namespace Mindvolving.Visualization
 {
-    public interface IVisualizationHolder
+    public interface IVisualizationComponent
     {
         MindvolvingVisualization Visualization { get; set; }
 

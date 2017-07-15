@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Mindvolving.Visualization.Renderers
 {
-    public class Primitive2DRenderer : IVisualizationHolder
+    public class Primitive2DRenderer : IVisualizationComponent
     {
         public MindvolvingVisualization Visualization { get; set; }
 

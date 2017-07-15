@@ -2,7 +2,7 @@
 
 namespace Mindvolving.Visualization
 {
-    public interface IRenderable : IVisualizationHolder
+    public interface IRenderable : IVisualizationComponent
     {
         void Draw(GameTime gt);
     }

@@ -1,28 +1,34 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Mindvolving.Visualization
 {
-    public class TextureManager
+    public class TextureManager : IVisualizationComponent
     {
-        private MindvolvingVisualization visualization;
+        public MindvolvingVisualization Visualization { get; set; }
 
-        public TextureManager(MindvolvingVisualization visualization)
+        public TextureManager()
         {
-            this.visualization = visualization;
+
         }
 
         public void LoadContent()
         {
-            Circle = visualization.Content.Load<Texture2D>("circle");
+            Circle = Visualization.Content.Load<Texture2D>("circle");
 
-            BlankTexture = new Texture2D(visualization.GraphicsDevice, 1, 1);
+            BlankTexture = new Texture2D(Visualization.GraphicsDevice, 1, 1);
             BlankTexture.SetData(new Color[] { Color.White });
+        }
+
+        public void Initialize()
+        {
+          
         }
 
         #region Textures
         public Texture2D Circle { get; private set; }
         public Texture2D BlankTexture { get; private set; }
-        #endregion     
+        #endregion
     }
 }
