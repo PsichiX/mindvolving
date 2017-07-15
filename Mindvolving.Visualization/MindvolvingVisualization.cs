@@ -37,12 +37,17 @@ namespace Mindvolving.Visualization
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
             Textures = new TextureManager(this);
-            Primitive2DRenderer = new Primitive2DRenderer();
-            Primitive2DRenderer.Visualization = this;
+            Primitive2DRenderer = new Primitive2DRenderer()
+            {
+                Visualization = this
+            };
 
             body = new Organism.Body();
-            bodyRenderer = new BodyRenderer(body);
-            bodyRenderer.Visualization = this;
+            bodyRenderer = new BodyRenderer(body)
+            {
+                Visualization = this
+            };
+
             bodyRenderer.Initialize();
 
             var a1 = body.CreateBodyPart();
@@ -59,8 +64,10 @@ namespace Mindvolving.Visualization
             a2.AttachMuscle(a3);
             a3.AttachMuscle(a4);
 
-            world = new World(new Jitter.Collision.CollisionSystemSAP());
-            world.Gravity = new Jitter.LinearMath.JVector(0, 100, 0);
+            world = new World(new Jitter.Collision.CollisionSystemSAP())
+            {
+                Gravity = new Jitter.LinearMath.JVector(0, 100, 0)
+            };
 
             var rigidBody1 = new RigidBody(new SphereShape(20));
             var rigidBody2 = new RigidBody(new SphereShape(30));
@@ -93,6 +100,11 @@ namespace Mindvolving.Visualization
             world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position) { Softness = 0f });
             world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position) { Softness = 0f });
 
+            world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position) { Softness = 0.01f });
+            world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody1, rigidBody4, rigidBody1.Position, rigidBody4.Position) { Softness = 0.01f });
+            world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody2, rigidBody3, rigidBody2.Position, rigidBody3.Position) { Softness = 0.01f });
+            world.AddConstraint(new Jitter.Dynamics.Constraints.PointPointDistance(rigidBody3, rigidBody4, rigidBody3.Position, rigidBody4.Position) { Softness = 0.01f });
+           
 
             Textures.LoadContent();
         }
