@@ -42,7 +42,14 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="IRenderable.cs" />
+    <Compile Include="IUpdateable.cs" />
     <Compile Include="MindvolvingVisualization.cs" />
+    <Compile Include="Organism\Body.cs" />
+    <Compile Include="Organism\BodyPart.cs" />
+    <Compile Include="Organism\Bone.cs" />
+    <Compile Include="Organism\Muscle.cs" />
+    <Compile Include="Organism\Skeleton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
