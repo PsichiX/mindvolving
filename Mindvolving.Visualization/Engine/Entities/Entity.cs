@@ -1,12 +1,15 @@
 ﻿using Microsoft.Xna.Framework;
 using System;
+using System.Collections.Generic;
 using Physics = FarseerPhysics;
 
 namespace Mindvolving.Visualization.Engine.Entities
 {
     public abstract class Entity : WorldObject
     {
-        public Physics.Dynamics.Body PhysicalBody { get; protected set; }
+        private Physics.Dynamics.Body physicalBody;
+
+        public Physics.Dynamics.Body PhysicalBody { get { return physicalBody; } protected set { SetPhysicalBody(value); } }
 
         public override Vector2 Position
         {
@@ -20,6 +23,10 @@ namespace Mindvolving.Visualization.Engine.Entities
             }
         }
 
+        public Entity()
+        {
+
+        }
 
         public override void Initialize()
         {
@@ -37,6 +44,46 @@ namespace Mindvolving.Visualization.Engine.Entities
 
             if (PhysicalBody != null)
                 PhysicalBody.Dispose();
+        }
+
+        protected virtual void OnCollision(CollisionEventArgs e)
+        {
+
+        }
+
+        protected virtual void OnUndentifiedCollision(CollisionEventArgs e)
+        {
+
+        }
+
+        private void SetPhysicalBody(Physics.Dynamics.Body physicalBody)
+        {
+            if (this.physicalBody != null)
+                this.physicalBody.OnCollision -= PhysicalBody_OnCollision;
+
+            this.physicalBody = physicalBody;
+            this.physicalBody.OnCollision += PhysicalBody_OnCollision;
+        }
+
+        private bool PhysicalBody_OnCollision(Physics.Dynamics.Fixture fixtureA, Physics.Dynamics.Fixture fixtureB, Physics.Dynamics.Contacts.Contact contact)
+        {
+            var me = fixtureA.UserData == this ? fixtureA : (fixtureB.UserData == this ? fixtureB : null);
+            var other = me == fixtureA ? fixtureB : (me == fixtureB ? fixtureA : null);
+
+            CollisionEventArgs args;
+
+            if (me != null && other != null)
+            {
+                args = new CollisionEventArgs(me.UserData, other.UserData, me, other, contact);
+                OnCollision(args);
+
+                return args.Result;
+            }
+
+            args = new CollisionEventArgs(null, null, me, other, contact);
+            OnCollision(args);
+
+            return args.Result;
         }
     }
 }
