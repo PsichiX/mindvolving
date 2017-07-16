@@ -19,8 +19,6 @@ namespace Mindvolving.Visualization
     public class MindvolvingVisualization : Game
     {
         private GraphicsDeviceManager graphics;
-        private Organism.Body body;
-        private BodyRenderer bodyRenderer;
         private Screen currentScreen;
 
         public SpriteBatch SpriteBatch { get; private set; }
@@ -65,11 +63,11 @@ namespace Mindvolving.Visualization
             Primitive2DRenderer = CreateVisualizationComponent<Primitive2DRenderer>();
             World = CreateVisualizationComponent<Engine.World>();
 
-            PreparePhisycsTestScene();
+            PreparePhysicsTestScene();
 
             Textures.LoadContent();
 
-            ChangeScreen<VisualizationScreen>();
+            ChangeScreen<DebugScreen>();
         }
 
         protected override void UnloadContent()
@@ -96,28 +94,8 @@ namespace Mindvolving.Visualization
             base.Draw(gameTime);
         }
 
-        private void PreparePhisycsTestScene()
+        private void PreparePhysicsTestScene()
         {
-            var organism = World.CreateEntity<OrganismEntity>();
-
-            body = new Organism.Body();
-            bodyRenderer = CreateVisualizationComponent<BodyRenderer>();
-            organism.OrganicBody = body;
-
-            var a1 = body.CreateBodyPart();
-            var a2 = body.CreateBodyPart();
-            var a3 = body.CreateBodyPart();
-            var a4 = body.CreateBodyPart();
-
-            a1.AttachBone(a2);
-            a2.AttachBone(a4);
-            a4.AttachBone(a3);
-
-            a1.AttachMuscle(a2);
-            a1.AttachMuscle(a4);
-            a2.AttachMuscle(a3);
-            a3.AttachMuscle(a4);
-
             // Physics simulation
             var rigidBody1 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 200), 0, BodyType.Dynamic);
             rigidBody1.CreateFixture(new CircleShape(20, 1));
@@ -127,11 +105,6 @@ namespace Mindvolving.Visualization
             rigidBody3.CreateFixture(new CircleShape(40, 1));
             var rigidBody4 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
             rigidBody4.CreateFixture(new CircleShape(50, 1));
-
-            a1.PhysicalBody = rigidBody1;
-            a2.PhysicalBody = rigidBody2;
-            a3.PhysicalBody = rigidBody3;
-            a4.PhysicalBody = rigidBody4;
 
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1 });
             //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1 });
@@ -143,6 +116,26 @@ namespace Mindvolving.Visualization
             //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody3, rigidBody2.Position, rigidBody3.Position, true) { DampingRatio = 0f });
             //world.AddJoint(new DistanceJoint(rigidBody3, rigidBody4, rigidBody3.Position, rigidBody4.Position, true) { DampingRatio = 0f });
 
+            // Organism building
+            OrganismEntityBuilder organismBuilder = new OrganismEntityBuilder();
+
+            organismBuilder.BeginBuilding(World);
+
+            organismBuilder.AddBodyPart(rigidBody1);
+            organismBuilder.AddBodyPart(rigidBody2);
+            organismBuilder.AddBodyPart(rigidBody3);
+            organismBuilder.AddBodyPart(rigidBody4);
+
+            organismBuilder.AddBone(0, 1, null);
+            organismBuilder.AddBone(1, 3, null);
+            organismBuilder.AddBone(3, 2, null);
+
+            organismBuilder.AddMuscle(0, 1, null, 50, 100);
+            organismBuilder.AddMuscle(0, 3, null, 50, 100);
+            organismBuilder.AddMuscle(1, 2, null, 50, 100);
+            organismBuilder.AddMuscle(2, 3, null, 50, 100);
+
+            organismBuilder.Build();
         }
 
         public T CreateVisualizationComponent<T>() where T : IVisualizationComponent, new()
