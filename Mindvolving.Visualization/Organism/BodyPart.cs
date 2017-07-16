@@ -21,7 +21,7 @@ namespace Mindvolving.Visualization.Organism
 
         public bool AttachBone(BodyPart bodyPart)
         {
-            return body.Skeleton.CreateBone(this, bodyPart);
+            return body.Skeleton.CreateBone(this, bodyPart) != null;
         }
     }
 }
