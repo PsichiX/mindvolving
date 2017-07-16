@@ -10,11 +10,12 @@ namespace Mindvolving.Visualization.Engine.Entities
         private OrganismEntity entity;
         private World world;
 
-        public void BeginBuilding(World world)
+        public void BeginBuilding(World world, Organisms.Organism organism)
         {
             this.world = world;
             entity = new OrganismEntity();
             entity.OrganicBody = new Organism.Body();
+            entity.Organism = organism;
         }
 
         public void AddBodyPart(Physics.Dynamics.Body physicalBodyPart)

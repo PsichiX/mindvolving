@@ -16,7 +16,7 @@ namespace Mindvolving.Visualization.Renderers.Entities
         {
             base.Draw(gt);
 
-            Visualization.Primitive2DRenderer.FillCircle(Food.Position, 20, Color.Green);
+            Visualization.Primitive2DRenderer.FillCircle(Food.Position, Food.FoodSize, Color.Green);
         }
 
         public override void Initialize()

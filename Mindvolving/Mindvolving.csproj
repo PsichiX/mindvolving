@@ -41,11 +41,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Organisms\DNA.cs" />
+    <Compile Include="Organisms\Muscle.cs" />
+    <Compile Include="Organisms\Organ.cs" />
+    <Compile Include="Organisms\Organism.cs" />
+    <Compile Include="Organisms\Physics\BoneUserData.cs" />
+    <Compile Include="Organisms\Physics\MuscleUserData.cs" />
+    <Compile Include="Organisms\Physics\OrganUserData.cs" />
+    <Compile Include="Organisms\Physics\IPhysicsUserData.cs" />
     <Compile Include="Psyche\Brain.cs" />
     <Compile Include="Psyche\Session.cs" />
     <Compile Include="Psyche\NAPI.cs" />
     <Compile Include="Simulation.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\FarseerPhysics.Portable\FarseerPhysics.Portable.csproj">
+      <Project>{9b3b4d0f-dcab-4b2f-bea4-5ede374e78fc}</Project>
+      <Name>FarseerPhysics.Portable</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

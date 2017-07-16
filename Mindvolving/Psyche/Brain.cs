@@ -20,6 +20,10 @@ namespace Mindvolving.Psyche
 
 		public float Energy { get { return NAPI.BrainGetEnergy(m_pointer); } }
 
+		public uint SensorsCount { get { return NAPI.BrainGetSensorsCount(m_pointer); } }
+
+		public uint EffectorsCount { get { return NAPI.BrainGetEffectorsCount(m_pointer); } }
+
 		public Brain(Session session)
 		{
 			if (session == null)
@@ -61,6 +65,16 @@ namespace Mindvolving.Psyche
 		public bool Feed(float energy)
 		{
 			return IsValid && NAPI.BrainFeed(m_pointer, energy);
+		}
+
+		public bool SensorPushImpulse(uint index, float value)
+		{
+			return IsValid && NAPI.BrainSensorPushImpulse(m_pointer, index, value);
+		}
+
+		public float EffectorTakeImpulse(uint index)
+		{
+			return IsValid ? NAPI.BrainEffectorTakeImpulse(m_pointer, index) : 0;
 		}
 
 		public byte[] Serialize()
