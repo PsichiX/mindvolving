@@ -1,4 +1,5 @@
-﻿using FarseerPhysics.Dynamics.Joints;
+﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Dynamics.Joints;
 using Microsoft.Xna.Framework;
 using Physics = FarseerPhysics;
 
@@ -19,6 +20,14 @@ namespace Mindvolving.Visualization.Engine.Entities
         public void AddBodyPart(Physics.Dynamics.Body physicalBodyPart)
         {
             Organism.BodyPart bodyPart = entity.OrganicBody.CreateBodyPart();
+
+            foreach(Fixture fixture in physicalBodyPart.FixtureList)
+            {
+                fixture.UserData = bodyPart;
+            }
+
+            physicalBodyPart.UserData = bodyPart;
+
             bodyPart.PhysicalBody = physicalBodyPart;
         }
 

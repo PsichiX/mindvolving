@@ -1,4 +1,5 @@
-﻿using FarseerPhysics.Factories;
+﻿using FarseerPhysics.Dynamics;
+using FarseerPhysics.Factories;
 
 namespace Mindvolving.Visualization.Engine.Entities
 {
@@ -13,7 +14,7 @@ namespace Mindvolving.Visualization.Engine.Entities
         {
             base.Initialize();
 
-            PhysicalBody = BodyFactory.CreateBody(World.PhysicalWorld, Position.ToFPVector2(), 0, FarseerPhysics.Dynamics.BodyType.Static);
+            PhysicalBody = BodyFactory.CreateBody(World.PhysicalWorld, Position.ToFPVector2(), 0, BodyType.Static);
         }
     }
 }
