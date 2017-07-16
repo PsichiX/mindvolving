@@ -11,6 +11,7 @@ namespace Mindvolving.Visualization.Engine.Entities
 
         public void BeginBuilding(World world)
         {
+            this.world = world;
             entity = new OrganismEntity();
             entity.OrganicBody = new Organism.Body();
         }
@@ -21,9 +22,10 @@ namespace Mindvolving.Visualization.Engine.Entities
             bodyPart.PhysicalBody = physicalBodyPart;
         }
 
-        public void AddBone(int bodyPartIndex1, int bodyPartIndex2)
+        public void AddBone(int bodyPartIndex1, int bodyPartIndex2, Joint joint)
         {
-            entity.OrganicBody.Skeleton.CreateBone(entity.OrganicBody.BodyParts[bodyPartIndex1], entity.OrganicBody.BodyParts[bodyPartIndex2]);
+            Organism.Bone bone = entity.OrganicBody.Skeleton.CreateBone(entity.OrganicBody.BodyParts[bodyPartIndex1], entity.OrganicBody.BodyParts[bodyPartIndex2]);
+            bone.Joint = joint;
         }
 
         public void AddMuscle(int bodyPartIndex1, int bodyPartIndex2, DistanceJoint joint, float idleLength, float contractionLength)
