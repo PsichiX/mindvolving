@@ -3,9 +3,8 @@ using Mindvolving.Visualization.Engine.Entities;
 
 namespace Mindvolving.Visualization.Renderers.Entities
 {
-    public class FoodEntityRenderer : IRenderable
+    public class FoodEntityRenderer : Renderer
     {
-        public MindvolvingVisualization Visualization { get; set; }
         public Food Food { get; private set; }
 
         public FoodEntityRenderer(Food food)
@@ -13,14 +12,16 @@ namespace Mindvolving.Visualization.Renderers.Entities
             Food = food;
         }
 
-        public void Draw(GameTime gt)
+        public override void Draw(GameTime gt)
         {
+            base.Draw(gt);
+
             Visualization.Primitive2DRenderer.FillCircle(Food.Position, 20, Color.Green);
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-
+            base.Initialize();
         }
     }
 }

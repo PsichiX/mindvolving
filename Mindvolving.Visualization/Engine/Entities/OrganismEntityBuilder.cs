@@ -4,12 +4,12 @@ using Physics = FarseerPhysics;
 
 namespace Mindvolving.Visualization.Engine.Entities
 {
-    public class OrganismEntityFactory
+    public class OrganismEntityBuilder
     {
         private OrganismEntity entity;
         private World world;
 
-        public void BeginCreation(World world)
+        public void BeginBuilding(World world)
         {
             entity = new OrganismEntity();
             entity.OrganicBody = new Organism.Body();
@@ -34,7 +34,7 @@ namespace Mindvolving.Visualization.Engine.Entities
             muscle.ContractionLength = contractionLength;
         }
 
-        public OrganismEntity EndCreation()
+        public OrganismEntity Build()
         {
             world.BringEntityIntoWorld(entity);
 
