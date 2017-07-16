@@ -4,20 +4,17 @@ using Mindvolving.Visualization.Organism;
 
 namespace Mindvolving.Visualization.Renderers
 {
-    public class BodyRenderer : IRenderable
+    public class BodyRenderer : Renderer
     {
         private BodyPartRenderer bodyPartRenderer;
         private MuscleRenderer muscleRenderer;
         private SkeletonRenderer skeletonRenderer;
 
-        public MindvolvingVisualization Visualization { get; set; }
         public Body Body { get; set; }
 
         public BodyRenderer()
         {
-            bodyPartRenderer = new BodyPartRenderer();
-            muscleRenderer = new MuscleRenderer();
-            skeletonRenderer = new SkeletonRenderer();
+
         }
 
         public BodyRenderer(Body body)
@@ -26,8 +23,10 @@ namespace Mindvolving.Visualization.Renderers
             Body = body;
         }
 
-        public void Draw(GameTime gt)
+        public override void Draw(GameTime gt)
         {
+            base.Draw(gt);
+
             if (Body == null)
                 return;
 
@@ -47,15 +46,13 @@ namespace Mindvolving.Visualization.Renderers
             skeletonRenderer.Draw(gt);
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-            bodyPartRenderer.Visualization = Visualization;
-            muscleRenderer.Visualization = Visualization;
-            skeletonRenderer.Visualization = Visualization;
+            base.Initialize();
 
-            bodyPartRenderer.Initialize();
-            muscleRenderer.Initialize();
-            skeletonRenderer.Initialize();
+            bodyPartRenderer = Visualization.CreateRenderer<BodyPartRenderer>();
+            muscleRenderer = Visualization.CreateRenderer<MuscleRenderer>();
+            skeletonRenderer = Visualization.CreateRenderer<SkeletonRenderer>();
         }
     }
 }

@@ -71,6 +71,7 @@
     <Compile Include="Renderers\MuscleRenderer.cs" />
     <Compile Include="Renderers\Primitive2DRenderer.cs" />
     <Compile Include="Renderers\PrimitiveBatch.cs" />
+    <Compile Include="Renderers\Renderer.cs" />
     <Compile Include="Renderers\SkeletonRenderer.cs" />
     <Compile Include="Renderers\WorldRenderer.cs" />
     <Compile Include="Screens\DebugScreen.cs" />

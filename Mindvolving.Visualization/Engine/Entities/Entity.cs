@@ -29,8 +29,7 @@ namespace Mindvolving.Visualization.Engine.Entities
 
         public virtual void Initialize()
         {
-            Renderer.Visualization = World.Visualization;
-            Renderer.Initialize();
+
         }
 
         public virtual void Update(GameTime gt)

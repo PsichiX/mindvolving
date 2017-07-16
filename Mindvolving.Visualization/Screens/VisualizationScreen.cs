@@ -13,7 +13,7 @@ namespace Mindvolving.Visualization.Screens
         {
             base.Initialize();
 
-            worldRenderer = new WorldRenderer(Visualization.World);
+            worldRenderer = Visualization.CreateVisualizationComponent(() => new WorldRenderer(Visualization.World));
         }
 
         public override void Update(GameTime gt)

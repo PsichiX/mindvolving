@@ -9,12 +9,13 @@ namespace Mindvolving.Visualization.Engine.Entities
 
         public OrganismEntity()
         {
-            Renderer = new OrganismEntityRenderer(this);
         }
 
         public override void Initialize()
         {
             base.Initialize();
+
+            Renderer = World.Visualization.CreateVisualizationComponent(() => new OrganismEntityRenderer(this));
         }
     }
 }

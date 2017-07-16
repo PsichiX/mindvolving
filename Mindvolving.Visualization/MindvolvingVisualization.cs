@@ -69,7 +69,7 @@ namespace Mindvolving.Visualization
 
             Textures.LoadContent();
 
-            ChangeScreen<DebugScreen>();
+            ChangeScreen<VisualizationScreen>();
         }
 
         protected override void UnloadContent()
@@ -161,6 +161,16 @@ namespace Mindvolving.Visualization
             component.Initialize();
 
             return component;
+        }
+
+        public T CreateRenderer<T>() where T : Renderer, new()
+        {
+            return CreateVisualizationComponent<T>();
+        }
+
+        public T CreateRenderer<T>(Func<T> creator) where T : Renderer
+        {
+            return CreateVisualizationComponent(creator);
         }
     }
 }
