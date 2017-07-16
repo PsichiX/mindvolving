@@ -11,9 +11,14 @@ namespace Mindvolving.Visualization.Organism
             Bones = new HashSet<Bone>();
         }
 
-        public bool CreateBone(BodyPart part1, BodyPart part2)
+        public Bone CreateBone(BodyPart part1, BodyPart part2)
         {
-            return Bones.Add(new Bone(part1, part2));
+            Bone bone = new Bone(part1, part2);
+
+            if (Bones.Add(bone))
+                return bone;
+
+            return null;
         }
     }
 }

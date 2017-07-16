@@ -1,4 +1,5 @@
-﻿using System;
+﻿using FarseerPhysics.Dynamics.Joints;
+using System;
 
 namespace Mindvolving.Visualization.Organism
 {
@@ -6,6 +7,7 @@ namespace Mindvolving.Visualization.Organism
     {
         public BodyPart Part1 { get; private set; }
         public BodyPart Part2 { get; private set; }
+        public Joint Joint { get; set; }
 
         public Bone(BodyPart part1, BodyPart part2)
         {
