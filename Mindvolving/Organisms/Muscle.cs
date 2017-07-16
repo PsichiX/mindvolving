@@ -1,5 +1,6 @@
 ﻿using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics.Joints;
+using Mindvolving.Organisms.Physics;
 using System;
 
 namespace Mindvolving.Organisms
@@ -32,6 +33,7 @@ namespace Mindvolving.Organisms
 			y = (float)Math.Sin(angle) * to.Radius;
 			var anchorTo = new Vector2(x, y);
 			Joint = new DistanceJoint(from.Body, to.Body, anchorFrom, anchorTo) { DampingRatio = 1, Frequency = 0.9f };
+			Joint.UserData = new MuscleUserData() { Muscle = this };
 			organism.World.AddJoint(Joint);
 		}
 
