@@ -45,6 +45,10 @@
     <Compile Include="Organisms\Muscle.cs" />
     <Compile Include="Organisms\Organ.cs" />
     <Compile Include="Organisms\Organism.cs" />
+    <Compile Include="Organisms\Physics\BoneUserData.cs" />
+    <Compile Include="Organisms\Physics\MuscleUserData.cs" />
+    <Compile Include="Organisms\Physics\OrganUserData.cs" />
+    <Compile Include="Organisms\Physics\IPhysicsUserData.cs" />
     <Compile Include="Psyche\Brain.cs" />
     <Compile Include="Psyche\Session.cs" />
     <Compile Include="Psyche\NAPI.cs" />
