@@ -1,4 +1,5 @@
 ﻿using FarseerPhysics.Factories;
+using Mindvolving.Visualization.Renderers.Entities;
 
 namespace Mindvolving.Visualization.Engine.Entities
 {
@@ -8,7 +9,7 @@ namespace Mindvolving.Visualization.Engine.Entities
 
         public OrganismEntity()
         {
-            
+            Renderer = new OrganismEntityRenderer(this);
         }
 
         public override void Initialize()

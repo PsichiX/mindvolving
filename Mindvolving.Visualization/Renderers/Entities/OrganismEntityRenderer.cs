@@ -19,13 +19,15 @@ namespace Mindvolving.Visualization.Renderers.Entities
 
         public void Draw(GameTime gt)
         {
+            bodyRenderer.Body = Entity.OrganicBody;
             bodyRenderer.Draw(gt);
         }
 
         public void Initialize()
         {
             bodyRenderer.Visualization = Visualization;
-            bodyRenderer.Body = Entity.OrganicBody;
+
+            bodyRenderer.Initialize();
         }
     }
 }
