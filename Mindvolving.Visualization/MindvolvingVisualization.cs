@@ -69,7 +69,7 @@ namespace Mindvolving.Visualization
 
             Textures.LoadContent();
 
-            ChangeScreen<VisualizationScreen>();
+            ChangeScreen<DebugScreen>();
         }
 
         protected override void UnloadContent()
