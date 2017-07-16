@@ -28,6 +28,9 @@ namespace Mindvolving.Visualization.Renderers
 
         public void Draw(GameTime gt)
         {
+            if (Body == null)
+                return;
+
             foreach (BodyPart part in Body.BodyParts)
             {
                 bodyPartRenderer.BodyPart = part;

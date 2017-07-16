@@ -27,7 +27,7 @@ namespace Mindvolving.Visualization.Renderers
 
             if (circle != null)
             {
-                Visualization.Primitive2DRenderer.FillCircle(BodyPart.Position, (int)circle.Radius, Color.Black, new Vector2(0.5f, 0.5f));
+                Visualization.Primitive2DRenderer.FillCircle(BodyPart.Position, (int)circle.Radius, Color.White, new Vector2(0.5f, 0.5f));
             }
         }
 
