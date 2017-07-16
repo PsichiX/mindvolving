@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Physics = FarseerPhysics;
 using Microsoft.Xna.Framework;
 using Mindvolving.Visualization.Engine.Enviroment;
+using Mindvolving;
 
 namespace Mindvolving.Visualization.Engine
 {
@@ -13,13 +14,14 @@ namespace Mindvolving.Visualization.Engine
         private bool initialized;
 
         public IReadOnlyList<Entity> Entities { get { return entities; } }
-        public Physics.Dynamics.World PhysicalWorld { get; private set; }
+        public Physics.Dynamics.World PhysicalWorld { get { return Simulation.World; } }
         public MindvolvingVisualization Visualization { get; set; }
         public IReadOnlyList<Decal> Decals { get { return decals; } }
+        public Simulation Simulation { get; private set; }
 
         public World()
         {
-            PhysicalWorld = new Physics.Dynamics.World(Physics.Common.Vector2.Zero);
+            Simulation = new Simulation();
 
             entities = new List<Entity>();
             decals = new List<Decal>();
@@ -35,6 +37,16 @@ namespace Mindvolving.Visualization.Engine
                 entity.Initialize();
 
             return entity;
+        }
+
+        public OrganismEntityBuilder CreateOrganism(Organisms.DNA dna)
+        {
+            OrganismEntityBuilder builder = new OrganismEntityBuilder();
+
+            Organisms.Organism organism = Simulation.CreateOrganism(dna);
+            builder.BeginBuilding(this, organism);
+
+            return builder;
         }
 
         public T CreateDecal<T>() where T : Decal, new()
@@ -62,7 +74,7 @@ namespace Mindvolving.Visualization.Engine
         {
             System.Diagnostics.Debug.Assert(initialized, "World must be initialized before updating");
 
-            PhysicalWorld.Step(1 / 60f);
+            Simulation.Process(1 / 60f);
  
             for(int i = 0; i < entities.Count; i++)
             {

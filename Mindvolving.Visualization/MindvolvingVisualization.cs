@@ -14,6 +14,7 @@ using Mindvolving.Visualization.Screens;
 using System;
 using Mindvolving.Visualization.Engine.Entities;
 using Mindvolving.Visualization.Engine.Enviroment;
+using System.Collections.Generic;
 
 namespace Mindvolving.Visualization
 {
@@ -112,7 +113,7 @@ namespace Mindvolving.Visualization
             World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
             World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
             World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
-            
+
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 0f });
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody4, rigidBody1.Position, rigidBody4.Position, true) { DampingRatio = 0f });
             //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody3, rigidBody2.Position, rigidBody3.Position, true) { DampingRatio = 0f, Length = 400 });
@@ -120,9 +121,10 @@ namespace Mindvolving.Visualization
             //world.AddJoint(new DistanceJoint(rigidBody3, rigidBody4, rigidBody3.Position, rigidBody4.Position, true) { DampingRatio = 0f });
 
             // Organism building
-            OrganismEntityBuilder organismBuilder = new OrganismEntityBuilder();
+            var dna = new Organisms.DNA();
+            dna.Root = new Organisms.DNA.Organ();
 
-            organismBuilder.BeginBuilding(World);
+            var organismBuilder = World.CreateOrganism(dna);
 
             organismBuilder.AddBodyPart(rigidBody1);
             organismBuilder.AddBodyPart(rigidBody2);
