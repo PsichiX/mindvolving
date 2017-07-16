@@ -13,6 +13,7 @@ using Mindvolving.Visualization.Engine.Input;
 using Mindvolving.Visualization.Screens;
 using System;
 using Mindvolving.Visualization.Engine.Entities;
+using Mindvolving.Visualization.Engine.Enviroment;
 
 namespace Mindvolving.Visualization
 {
@@ -20,13 +21,15 @@ namespace Mindvolving.Visualization
     {
         private GraphicsDeviceManager graphics;
         private Screen currentScreen;
-
+        
         public SpriteBatch SpriteBatch { get; private set; }
         public TextureManager Textures { get; private set; }
         public Primitive2DRenderer Primitive2DRenderer { get; private set; }
         public Engine.World World { get; private set; }
         public Camera Camera { get; private set; }
         public InputManager InputManager { get; private set; }
+
+        public static Random Random { get; private set; } = new Random();
 
         public MindvolvingVisualization()
         {
@@ -67,7 +70,7 @@ namespace Mindvolving.Visualization
 
             Textures.LoadContent();
 
-            ChangeScreen<DebugScreen>();
+            ChangeScreen<VisualizationScreen>();
         }
 
         protected override void UnloadContent()
@@ -87,7 +90,7 @@ namespace Mindvolving.Visualization
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(new Color(30, 50, 90));
 
             currentScreen.Draw(gameTime);
 
@@ -136,6 +139,16 @@ namespace Mindvolving.Visualization
             organismBuilder.AddMuscle(2, 3, null, 50, 100);
 
             organismBuilder.Build();
+
+            var food = World.CreateEntity<Food>();
+            food.Position = new Vector2(400, 200);
+
+            for (int i = 0; i < 30; i++)
+            {
+                var bubble = World.CreateDecal<Bubble>();
+                bubble.Position = new Vector2(Random.Next(0, 700), Random.Next(0, 500));
+                bubble.Size = (float)(Random.NextDouble() * 0.8 + 0.2);
+            }
         }
 
         public T CreateVisualizationComponent<T>() where T : IVisualizationComponent, new()

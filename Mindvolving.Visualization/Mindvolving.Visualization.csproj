@@ -45,7 +45,10 @@
     <Compile Include="Engine\Camera.cs" />
     <Compile Include="Engine\Entities\Entity.cs" />
     <Compile Include="Engine\Entities\OrganismEntityBuilder.cs" />
+    <Compile Include="Engine\Enviroment\Bubble.cs" />
+    <Compile Include="Engine\Enviroment\Decal.cs" />
     <Compile Include="Engine\IWorldElement.cs" />
+    <Compile Include="Engine\WorldObject.cs" />
     <Compile Include="Engine\World.cs" />
     <Compile Include="Engine\Entities\Food.cs" />
     <Compile Include="Engine\Entities\OrganismEntity.cs" />
@@ -68,6 +71,7 @@
     <Compile Include="Renderers\DebugViewRenderer.cs" />
     <Compile Include="Renderers\Entities\FoodEntityRenderer.cs" />
     <Compile Include="Renderers\Entities\OrganismEntityRenderer.cs" />
+    <Compile Include="Renderers\Enviroment\BubbleRenderer.cs" />
     <Compile Include="Renderers\MuscleRenderer.cs" />
     <Compile Include="Renderers\Primitive2DRenderer.cs" />
     <Compile Include="Renderers\PrimitiveBatch.cs" />
