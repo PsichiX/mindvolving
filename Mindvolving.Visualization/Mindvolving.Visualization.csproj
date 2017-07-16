@@ -44,7 +44,7 @@
   <ItemGroup>
     <Compile Include="Engine\Camera.cs" />
     <Compile Include="Engine\Entities\Entity.cs" />
-    <Compile Include="Engine\Entities\OrganismEntityFactory.cs" />
+    <Compile Include="Engine\Entities\OrganismEntityBuilder.cs" />
     <Compile Include="Engine\IWorldElement.cs" />
     <Compile Include="Engine\World.cs" />
     <Compile Include="Engine\Entities\Food.cs" />
