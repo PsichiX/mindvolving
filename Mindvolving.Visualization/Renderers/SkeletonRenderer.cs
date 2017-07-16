@@ -4,16 +4,15 @@ using Mindvolving.Visualization.Organism;
 
 namespace Mindvolving.Visualization.Renderers
 {
-    public class SkeletonRenderer : IRenderable
+    public class SkeletonRenderer : Renderer
     {
         private BoneRenderer boneRenderer;
 
-        public MindvolvingVisualization Visualization { get; set; }
         public Skeleton Skeleton { get; set; }
 
         public SkeletonRenderer()
         {
-            boneRenderer = new BoneRenderer();
+
         }
 
         public SkeletonRenderer(Skeleton skeleton)
@@ -21,8 +20,10 @@ namespace Mindvolving.Visualization.Renderers
             Skeleton = skeleton;
         }
 
-        public void Draw(GameTime gt)
+        public override void Draw(GameTime gt)
         {
+            base.Draw(gt);
+
             foreach(Bone bone in Skeleton.Bones)
             {
                 boneRenderer.Bone = bone;
@@ -30,11 +31,11 @@ namespace Mindvolving.Visualization.Renderers
             }
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-            boneRenderer.Visualization = Visualization;
+            base.Initialize();
 
-            boneRenderer.Initialize();
+            boneRenderer = Visualization.CreateRenderer<BoneRenderer>();
         }
     }
 }

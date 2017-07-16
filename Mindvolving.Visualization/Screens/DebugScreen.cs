@@ -13,13 +13,15 @@ namespace Mindvolving.Visualization.Screens
         {
             base.Initialize();
 
-            debugViewRenderer = new DebugViewRenderer(Visualization.World);
+            debugViewRenderer = new DebugViewRenderer(Visualization.World.PhysicalWorld);
             debugViewRenderer.LoadContent(Visualization.GraphicsDevice, Visualization.Content);
         }
 
         public override void Update(GameTime gt)
         {
             base.Update(gt);
+
+            Visualization.World.Update(gt);
 
             MouseState currentMouseState = Visualization.InputManager.MouseState;
 

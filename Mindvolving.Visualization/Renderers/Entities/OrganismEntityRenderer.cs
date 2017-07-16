@@ -4,30 +4,30 @@ using Mindvolving.Visualization.Engine.Entities;
 
 namespace Mindvolving.Visualization.Renderers.Entities
 {
-    public class OrganismEntityRenderer : IRenderable
+    public class OrganismEntityRenderer : Renderer
     {
         private BodyRenderer bodyRenderer;
 
-        public MindvolvingVisualization Visualization { get; set; }
         public OrganismEntity Entity { get; private set; }
 
         public OrganismEntityRenderer(OrganismEntity entity)
         {
             Entity = entity;
-            bodyRenderer = new BodyRenderer();
         }
 
-        public void Draw(GameTime gt)
+        public override void Draw(GameTime gt)
         {
+            base.Draw(gt);
+
             bodyRenderer.Body = Entity.OrganicBody;
             bodyRenderer.Draw(gt);
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-            bodyRenderer.Visualization = Visualization;
+            base.Initialize();
 
-            bodyRenderer.Initialize();
+            bodyRenderer = Visualization.CreateRenderer<BodyRenderer>();
         }
     }
 }

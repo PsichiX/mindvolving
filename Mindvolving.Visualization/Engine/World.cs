@@ -9,6 +9,7 @@ namespace Mindvolving.Visualization.Engine
     public class World : IUpdateable, IVisualizationComponent
     {
         private List<Entity> entities;
+        private bool initialized;
 
         public IReadOnlyList<Entity> Entities { get { return entities; } }
         public Physics.Dynamics.World PhysicalWorld { get; private set; }
@@ -26,7 +27,10 @@ namespace Mindvolving.Visualization.Engine
             T entity = new T();
             entity.World = this;
             entities.Add(entity);
-            entity.Initialize();
+
+            if(initialized)
+                entity.Initialize();
+
             return entity;
         }
 
@@ -34,11 +38,15 @@ namespace Mindvolving.Visualization.Engine
         {
             entity.World = this;
             entities.Add(entity);
-            entity.Initialize();
+
+            if (initialized)
+                entity.Initialize();
         }
 
         public void Update(GameTime gt)
         {
+            System.Diagnostics.Debug.Assert(initialized, "World must be initialized before updating");
+
             PhysicalWorld.Step(1 / 60f);
  
             for(int i = 0; i < entities.Count; i++)
@@ -56,7 +64,12 @@ namespace Mindvolving.Visualization.Engine
 
         public void Initialize()
         {
+            for (int i = 0; i < entities.Count; i++)
+            {
+                entities[i].Initialize();
+            }
 
+            initialized = true;
         }
     }
 }

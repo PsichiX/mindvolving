@@ -6,9 +6,8 @@ using FarseerPhysics.Collision.Shapes;
 
 namespace Mindvolving.Visualization.Renderers
 {
-    public class MuscleRenderer : IRenderable
+    public class MuscleRenderer : Renderer
     {
-        public MindvolvingVisualization Visualization { get; set; }
         public Muscle Muscle { get; set; }
 
         public MuscleRenderer()
@@ -21,8 +20,10 @@ namespace Mindvolving.Visualization.Renderers
             Muscle = muscle;
         }
 
-        public void Draw(GameTime gt)
+        public override void Draw(GameTime gt)
         {
+            base.Draw(gt);
+
             CircleShape circle1 = Muscle.Part1.PhysicalBody.FixtureList.Select(p => p.Shape).Where(p => p is CircleShape).Cast<CircleShape>().FirstOrDefault();
             CircleShape circle2 = Muscle.Part2.PhysicalBody.FixtureList.Select(p => p.Shape).Where(p => p is CircleShape).Cast<CircleShape>().FirstOrDefault();
 
@@ -38,9 +39,9 @@ namespace Mindvolving.Visualization.Renderers
             }
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-            
+            base.Initialize();
         }
     }
 }
