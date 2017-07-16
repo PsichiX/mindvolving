@@ -41,9 +41,7 @@ namespace Mindvolving.Visualization.Screens
         {
             base.Draw(gt);
 
-            Visualization.SpriteBatch.Begin();
             worldRenderer.Draw(gt);
-            Visualization.SpriteBatch.End();
         }
     }
 }

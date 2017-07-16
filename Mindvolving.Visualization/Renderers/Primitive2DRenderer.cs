@@ -58,7 +58,7 @@ namespace Mindvolving.Visualization.Renderers
         {
             Vector2 textureSize = new Vector2(Visualization.Textures.Circle.Width, Visualization.Textures.Circle.Height);
 
-            Visualization.SpriteBatch.Draw(Visualization.Textures.Circle, new Rectangle(pos.ToPoint(), new Point(radius * 2)), null, color, 0f, origin * textureSize, SpriteEffects.None, 0f);
+            Visualization.SpriteBatch.Draw(Visualization.Textures.Circle, new Rectangle(pos.ToPoint(), new Point(radius * 2)), null, color, 0f, origin * textureSize, SpriteEffects.None, 0.5f);
         }
 
         public void DrawPoint(Vector2 pos, Color color)
