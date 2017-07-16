@@ -6,35 +6,44 @@ namespace Mindvolving.Visualization.Renderers
 {
     public class BodyRenderer : IRenderable
     {
-        private Body body;
         private BodyPartRenderer bodyPartRenderer;
         private MuscleRenderer muscleRenderer;
         private SkeletonRenderer skeletonRenderer;
 
         public MindvolvingVisualization Visualization { get; set; }
+        public Body Body { get; set; }
+
+        public BodyRenderer()
+        {
+            bodyPartRenderer = new BodyPartRenderer();
+            muscleRenderer = new MuscleRenderer();
+            skeletonRenderer = new SkeletonRenderer();
+        }
 
         public BodyRenderer(Body body)
+            : this()
         {
-            this.body = body;
-            bodyPartRenderer = new BodyPartRenderer(body);
-            muscleRenderer = new MuscleRenderer(body);
-            skeletonRenderer = new SkeletonRenderer(body.Skeleton);
+            Body = body;
         }
-    
+
         public void Draw(GameTime gt)
         {
-            foreach (BodyPart part in body.BodyParts)
+            if (Body == null)
+                return;
+
+            foreach (BodyPart part in Body.BodyParts)
             {
-                bodyPartRenderer.Current = part;
+                bodyPartRenderer.BodyPart = part;
                 bodyPartRenderer.Draw(gt);
             }
 
-            foreach (Muscle muscle in body.Muscles)
+            foreach (Muscle muscle in Body.Muscles)
             {
-                muscleRenderer.Current = muscle;
+                muscleRenderer.Muscle = muscle;
                 muscleRenderer.Draw(gt);
             }
 
+            skeletonRenderer.Skeleton = Body.Skeleton;
             skeletonRenderer.Draw(gt);
         }
 

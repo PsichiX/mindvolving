@@ -6,22 +6,26 @@ namespace Mindvolving.Visualization.Renderers
 {
     public class SkeletonRenderer : IRenderable
     {
-        private Skeleton skeleton;
         private BoneRenderer boneRenderer;
 
         public MindvolvingVisualization Visualization { get; set; }
+        public Skeleton Skeleton { get; set; }
+
+        public SkeletonRenderer()
+        {
+            boneRenderer = new BoneRenderer();
+        }
 
         public SkeletonRenderer(Skeleton skeleton)
         {
-            this.skeleton = skeleton;
-            boneRenderer = new BoneRenderer(skeleton);
+            Skeleton = skeleton;
         }
 
         public void Draw(GameTime gt)
         {
-            foreach(Bone bone in skeleton.Bones)
+            foreach(Bone bone in Skeleton.Bones)
             {
-                boneRenderer.Current = bone;
+                boneRenderer.Bone = bone;
                 boneRenderer.Draw(gt);
             }
         }

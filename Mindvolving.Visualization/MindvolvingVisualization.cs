@@ -1,6 +1,7 @@
 ﻿using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Dynamics;
 using FPCommon = FarseerPhysics.Common;
+using Physics = FarseerPhysics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +12,7 @@ using Mindvolving.Visualization.Engine;
 using Mindvolving.Visualization.Engine.Input;
 using Mindvolving.Visualization.Screens;
 using System;
+using Mindvolving.Visualization.Engine.Entities;
 
 namespace Mindvolving.Visualization
 {
@@ -24,7 +26,7 @@ namespace Mindvolving.Visualization
         public SpriteBatch SpriteBatch { get; private set; }
         public TextureManager Textures { get; private set; }
         public Primitive2DRenderer Primitive2DRenderer { get; private set; }
-        public World World { get; private set; }
+        public Engine.World World { get; private set; }
         public Camera Camera { get; private set; }
         public InputManager InputManager { get; private set; }
 
@@ -61,8 +63,9 @@ namespace Mindvolving.Visualization
             InputManager = CreateVisualizationComponent<InputManager>();
             Textures = CreateVisualizationComponent<TextureManager>();
             Primitive2DRenderer = CreateVisualizationComponent<Primitive2DRenderer>();
+            World = CreateVisualizationComponent<Engine.World>();
 
-            World = new World(new FPCommon.Vector2(0, 0));
+            PreparePhisycsTestScene();
 
             Textures.LoadContent();
 
@@ -79,7 +82,6 @@ namespace Mindvolving.Visualization
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            World.Step(1 / 60f);
             currentScreen.Update(gameTime);
 
             base.Update(gameTime);
@@ -96,8 +98,11 @@ namespace Mindvolving.Visualization
 
         private void PreparePhisycsTestScene()
         {
+            var organism = World.CreateEntity<OrganismEntity>();
+
             body = new Organism.Body();
-            bodyRenderer = CreateVisualizationComponent(() => new BodyRenderer(body));
+            bodyRenderer = CreateVisualizationComponent<BodyRenderer>();
+            organism.OrganicBody = body;
 
             var a1 = body.CreateBodyPart();
             var a2 = body.CreateBodyPart();
@@ -114,23 +119,23 @@ namespace Mindvolving.Visualization
             a3.AttachMuscle(a4);
 
             // Physics simulation
-            var rigidBody1 = BodyFactory.CreateBody(World, new FPCommon.Vector2(200, 200), 0, BodyType.Dynamic);
+            var rigidBody1 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 200), 0, BodyType.Dynamic);
             rigidBody1.CreateFixture(new CircleShape(20, 1));
-            var rigidBody2 = BodyFactory.CreateBody(World, new FPCommon.Vector2(120, 20), 0, BodyType.Dynamic);
+            var rigidBody2 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(120, 20), 0, BodyType.Dynamic);
             rigidBody2.CreateFixture(new CircleShape(30, 1));
-            var rigidBody3 = BodyFactory.CreateBody(World, new FPCommon.Vector2(100, 100), 0, BodyType.Static);
+            var rigidBody3 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(100, 100), 0, BodyType.Static);
             rigidBody3.CreateFixture(new CircleShape(40, 1));
-            var rigidBody4 = BodyFactory.CreateBody(World, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
+            var rigidBody4 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
             rigidBody4.CreateFixture(new CircleShape(50, 1));
 
-            a1.RigidBody = rigidBody1;
-            a2.RigidBody = rigidBody2;
-            a3.RigidBody = rigidBody3;
-            a4.RigidBody = rigidBody4;
+            a1.PhysicalBody = rigidBody1;
+            a2.PhysicalBody = rigidBody2;
+            a3.PhysicalBody = rigidBody3;
+            a4.PhysicalBody = rigidBody4;
 
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1 });
             //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1 });
-            World.AddJoint(new DistanceJoint(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
+            World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
 
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 0f });
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody4, rigidBody1.Position, rigidBody4.Position, true) { DampingRatio = 0f });
@@ -140,7 +145,7 @@ namespace Mindvolving.Visualization
 
         }
 
-        private T CreateVisualizationComponent<T>() where T : IVisualizationComponent, new()
+        public T CreateVisualizationComponent<T>() where T : IVisualizationComponent, new()
         {
             T component = new T();
             component.Visualization = this;
@@ -149,7 +154,7 @@ namespace Mindvolving.Visualization
             return component;
         }
 
-        private T CreateVisualizationComponent<T>(Func<T> creator) where T : IVisualizationComponent
+        public T CreateVisualizationComponent<T>(Func<T> creator) where T : IVisualizationComponent
         {
             T component = creator();
             component.Visualization = this;
