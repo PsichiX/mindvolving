@@ -115,14 +115,14 @@ namespace Mindvolving.Psyche
 		);
 
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-		[return: MarshalAs(UnmanagedType.I8)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		public extern static bool SessionStart(
 			[MarshalAs(UnmanagedType.LPStr)]
 			string uid
 		);
 
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-		[return: MarshalAs(UnmanagedType.I8)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		public extern static bool SessionStop(
 			[MarshalAs(UnmanagedType.LPStr)]
 			string uid
@@ -136,7 +136,7 @@ namespace Mindvolving.Psyche
 		);
 
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-		[return: MarshalAs(UnmanagedType.I8)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		public extern static bool BrainDestroy(
 			[MarshalAs(UnmanagedType.LPStr)]
 			string suid,
@@ -153,7 +153,7 @@ namespace Mindvolving.Psyche
 		);
 
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-		[return: MarshalAs(UnmanagedType.I8)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		public extern static bool PerformOnBrainLater(
 			[MarshalAs(UnmanagedType.LPStr)]
 			string suid,
@@ -175,7 +175,7 @@ namespace Mindvolving.Psyche
 		);
 
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-		[return: MarshalAs(UnmanagedType.I8)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		public extern static bool BrainResetDemandForEnergyUnits(
 			IntPtr brain
 		);
@@ -186,14 +186,58 @@ namespace Mindvolving.Psyche
 		);
 
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-		[return: MarshalAs(UnmanagedType.I8)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		public extern static bool BrainFeed(
 			IntPtr brain,
 			float energy
 		);
 
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-		[return: MarshalAs(UnmanagedType.I8)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public extern static bool BrainSetupSensorSlots(
+			IntPtr brain,
+			[MarshalAs(UnmanagedType.U4)]
+			uint count
+		);
+
+		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public extern static bool BrainSetupEffectorSlots(
+			IntPtr brain,
+			[MarshalAs(UnmanagedType.U4)]
+			uint count
+		);
+
+		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+		[return: MarshalAs(UnmanagedType.U4)]
+		public extern static uint BrainGetSensorsCount(
+			IntPtr brain
+		);
+
+		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+		[return: MarshalAs(UnmanagedType.U4)]
+		public extern static uint BrainGetEffectorsCount(
+			IntPtr brain
+		);
+
+		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+		[return: MarshalAs(UnmanagedType.I1)]
+		public extern static bool BrainSensorPushImpulse(
+			IntPtr brain,
+			[MarshalAs(UnmanagedType.U4)]
+			uint index,
+			float value
+		);
+
+		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+		public extern static float BrainEffectorTakeImpulse(
+			IntPtr brain,
+			[MarshalAs(UnmanagedType.U4)]
+			uint index
+		);
+
+		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		private extern static bool BrainSerialize(
 			IntPtr brain,
 			[MarshalAs(UnmanagedType.FunctionPtr)]
@@ -213,7 +257,7 @@ namespace Mindvolving.Psyche
 		}
 
 		[DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
-		[return: MarshalAs(UnmanagedType.I8)]
+		[return: MarshalAs(UnmanagedType.I1)]
 		private extern static bool BrainDeserialize(
 			IntPtr brain,
 			IntPtr data,

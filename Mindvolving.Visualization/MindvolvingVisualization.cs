@@ -70,7 +70,7 @@ namespace Mindvolving.Visualization
 
             Textures.LoadContent();
 
-            ChangeScreen<VisualizationScreen>();
+            ChangeScreen<DebugScreen>();
         }
 
         protected override void UnloadContent()
@@ -109,10 +109,10 @@ namespace Mindvolving.Visualization
             var rigidBody4 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
             rigidBody4.CreateFixture(new CircleShape(50, 1));
 
-            //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1 });
-            //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1 });
+            World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
+            World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
             World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
-
+            
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 0f });
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody4, rigidBody1.Position, rigidBody4.Position, true) { DampingRatio = 0f });
             //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody3, rigidBody2.Position, rigidBody3.Position, true) { DampingRatio = 0f, Length = 400 });

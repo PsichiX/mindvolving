@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Physics = FarseerPhysics;
 using Microsoft.Xna.Framework;
-using System;
 using Mindvolving.Visualization.Engine.Enviroment;
 
 namespace Mindvolving.Visualization.Engine
