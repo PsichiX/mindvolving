@@ -23,7 +23,6 @@
 using System.Diagnostics;
 using FarseerPhysics.Common;
 using FarseerPhysics.Common.ConvexHull;
-using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Collision.Shapes
 {

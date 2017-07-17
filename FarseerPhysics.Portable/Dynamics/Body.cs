@@ -31,7 +31,6 @@ using FarseerPhysics.Common.PhysicsLogic;
 using FarseerPhysics.Controllers;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Dynamics.Joints;
-using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Dynamics
 {

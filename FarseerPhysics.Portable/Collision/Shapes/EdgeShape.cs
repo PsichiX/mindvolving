@@ -21,7 +21,6 @@
 */
 
 using FarseerPhysics.Common;
-using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Collision.Shapes
 {

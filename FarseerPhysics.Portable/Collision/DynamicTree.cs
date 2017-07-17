@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using FarseerPhysics.Common;
-using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Collision
 {

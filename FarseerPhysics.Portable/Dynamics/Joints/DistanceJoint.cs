@@ -23,7 +23,6 @@
 using System;
 using System.Diagnostics;
 using FarseerPhysics.Common;
-using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Dynamics.Joints
 {
