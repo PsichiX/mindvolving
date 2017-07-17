@@ -15,6 +15,8 @@ namespace Mindvolving.Visualization.Screens
 
             debugViewRenderer = new DebugViewRenderer(Visualization.World.PhysicalWorld);
             debugViewRenderer.LoadContent(Visualization.GraphicsDevice, Visualization.Content);
+
+            lastMouseState = Visualization.InputManager.MouseState;
         }
 
         public override void Update(GameTime gt)
