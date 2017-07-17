@@ -48,6 +48,7 @@ namespace Mindvolving.Organisms
 			Root = null;
 			Brain = null;
 			m_muscles.Clear();
+			GC.SuppressFinalize(this);
 		}
 
 		internal static Organism Factory(Simulation simulation, DNA dna)

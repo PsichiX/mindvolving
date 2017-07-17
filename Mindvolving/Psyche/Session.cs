@@ -78,6 +78,7 @@ namespace Mindvolving.Psyche
 			foreach (var b in m_brains)
 				b.Value.Dispose();
 			m_brains.Clear();
+			GC.SuppressFinalize(this);
 		}
 
 		public bool Start()

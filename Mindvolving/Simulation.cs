@@ -30,6 +30,7 @@ namespace Mindvolving
 				organism.Dispose();
 			World = null;
 			m_organisms.Clear();
+			GC.SuppressFinalize(this);
 		}
 
 		// TODO: move to thread

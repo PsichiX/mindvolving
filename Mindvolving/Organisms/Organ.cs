@@ -64,6 +64,7 @@ namespace Mindvolving.Organisms
 			Bone = null;
 			Radius = 0;
 			m_children.Clear();
+			GC.SuppressFinalize(this);
 		}
 	}
 }
