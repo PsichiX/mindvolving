@@ -1,31 +1,35 @@
 ﻿using Microsoft.Xna.Framework;
-using Mindvolving.Visualization.Organism;
+using Mindvolving.Organisms;
 
 namespace Mindvolving.Visualization.Renderers
 {
-    public class BoneRenderer : IRenderable
+    public class BoneRenderer : Renderer
     {
-        public MindvolvingVisualization Visualization { get; set; }
-        public Bone Bone { get; set; }
+        public Organ Organ { get; set; }
 
         public BoneRenderer()
         {
 
         }
 
-        public BoneRenderer(Bone bone)
+        public BoneRenderer(Organ organ)
         {
-            Bone = bone;
+            Organ = organ;
         }
 
-        public void Draw(GameTime gt)
+        public override void Draw(GameTime gt)
         {
-            Visualization.Primitive2DRenderer.DrawLine(Bone.Part1.Position, Bone.Part2.Position, Color.Blue);
+            base.Draw(gt);
+
+            if (Organ.Bone == null)
+                return;
+
+            Visualization.Primitive2DRenderer.DrawLine(Organ.Bone.BodyA.Position.ToMGVector2(), Organ.Bone.BodyB.Position.ToMGVector2(), Color.Blue);
         }
 
-        public void Initialize()
+        public override void Initialize()
         {
-
+            base.Initialize();
         }
     }
 }

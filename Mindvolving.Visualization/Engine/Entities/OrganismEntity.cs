@@ -5,16 +5,18 @@ namespace Mindvolving.Visualization.Engine.Entities
 {
     public class OrganismEntity : Entity
     {
-        public Organism.Body OrganicBody { get; set; }
+        public Organisms.Organism Organism { get; set; }
 
         public OrganismEntity()
         {
-            Renderer = new OrganismEntityRenderer(this);
+
         }
 
         public override void Initialize()
         {
             base.Initialize();
+
+            Renderer = World.Visualization.CreateRenderer(() => new OrganismEntityRenderer(this));
         }
     }
 }

@@ -43,9 +43,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Engine\Camera.cs" />
+    <Compile Include="Engine\CollisionEventArgs.cs" />
     <Compile Include="Engine\Entities\Entity.cs" />
-    <Compile Include="Engine\Entities\OrganismEntityFactory.cs" />
+    <Compile Include="Engine\Enviroment\Bubble.cs" />
+    <Compile Include="Engine\Enviroment\Decal.cs" />
     <Compile Include="Engine\IWorldElement.cs" />
+    <Compile Include="Engine\WorldObject.cs" />
     <Compile Include="Engine\World.cs" />
     <Compile Include="Engine\Entities\Food.cs" />
     <Compile Include="Engine\Entities\OrganismEntity.cs" />
@@ -55,23 +58,19 @@
     <Compile Include="IUpdateable.cs" />
     <Compile Include="IVisualizationComponent.cs" />
     <Compile Include="MindvolvingVisualization.cs" />
-    <Compile Include="Organism\Body.cs" />
-    <Compile Include="Organism\BodyPart.cs" />
-    <Compile Include="Organism\Bone.cs" />
-    <Compile Include="Organism\Muscle.cs" />
-    <Compile Include="Organism\Skeleton.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renderers\BodyPartRenderer.cs" />
-    <Compile Include="Renderers\BodyRenderer.cs" />
+    <Compile Include="Renderers\OrganRenderer.cs" />
+    <Compile Include="Renderers\OrganismRenderer.cs" />
     <Compile Include="Renderers\BoneRenderer.cs" />
     <Compile Include="Renderers\DebugViewRenderer.cs" />
     <Compile Include="Renderers\Entities\FoodEntityRenderer.cs" />
     <Compile Include="Renderers\Entities\OrganismEntityRenderer.cs" />
+    <Compile Include="Renderers\Enviroment\BubbleRenderer.cs" />
     <Compile Include="Renderers\MuscleRenderer.cs" />
     <Compile Include="Renderers\Primitive2DRenderer.cs" />
     <Compile Include="Renderers\PrimitiveBatch.cs" />
-    <Compile Include="Renderers\SkeletonRenderer.cs" />
+    <Compile Include="Renderers\Renderer.cs" />
     <Compile Include="Renderers\WorldRenderer.cs" />
     <Compile Include="Screens\DebugScreen.cs" />
     <Compile Include="Screens\Screen.cs" />

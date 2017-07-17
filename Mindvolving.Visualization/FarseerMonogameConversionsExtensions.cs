@@ -7,17 +7,18 @@ namespace Mindvolving.Visualization
     {
         public static Vector2 ToMGVector2(this FarseerPhysics.Common.Vector2 vector)
         {
+            vector = FarseerPhysics.ConvertUnits.ToDisplayUnits(vector);
             return new Vector2(vector.X, vector.Y);
         }
 
         public static FarseerPhysics.Common.Vector2 ToFPVector2(this Vector2 vector)
         {
-            return new FarseerPhysics.Common.Vector2(vector.X, vector.Y);
+            return FarseerPhysics.ConvertUnits.ToSimUnits(new FarseerPhysics.Common.Vector2(vector.X, vector.Y));
         }
 
         public static Vector2[] ToMGVector2(this FarseerPhysics.Common.Vector2[] vector)
         {
-            return vector.Select(v => new Vector2(v.X, v.Y)).ToArray();
+            return vector.Select(v => { v = FarseerPhysics.ConvertUnits.ToDisplayUnits(v); return new Vector2(v.X, v.Y); }).ToArray();
         }
 
         public static Matrix ToMGMatrix(this FarseerPhysics.Common.Matrix matrix)
