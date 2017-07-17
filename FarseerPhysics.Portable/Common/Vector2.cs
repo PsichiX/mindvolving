@@ -410,6 +410,12 @@ namespace FarseerPhysics.Common
 
         public static void Normalize(ref Vector2 value, out Vector2 result)
         {
+            if (value.LengthSquared() == 0)
+            {
+                result = Vector2.Zero;
+                return;
+            }
+
             float factor;
             DistanceSquared(ref value, ref zeroVector, out factor);
             factor = 1f/(float) Math.Sqrt(factor);
