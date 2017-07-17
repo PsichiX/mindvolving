@@ -55,7 +55,7 @@ namespace Mindvolving.Organisms
 		{
 			var organism = new Organism(simulation);
 			organism.Root = new Organ(dna.Root.UID, organism, null, position, dna.Root.Radius);
-			CreateChildrenOrgan(organism.Root, dna.Root, Vector2.Zero);
+			CreateChildrenOrgan(organism.Root, dna.Root, position);
 			foreach (var muscle in dna.Muscles)
 				CreateMuscle(organism, muscle);
 			return organism;
