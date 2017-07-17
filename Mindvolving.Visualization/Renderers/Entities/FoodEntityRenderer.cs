@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FarseerPhysics;
+using Microsoft.Xna.Framework;
 using Mindvolving.Visualization.Engine.Entities;
 
 namespace Mindvolving.Visualization.Renderers.Entities
@@ -16,7 +17,7 @@ namespace Mindvolving.Visualization.Renderers.Entities
         {
             base.Draw(gt);
 
-            Visualization.Primitive2DRenderer.FillCircle(Food.Position, Food.FoodSize, Color.Green);
+            Visualization.Primitive2DRenderer.FillCircle(Food.Position, (int)ConvertUnits.ToDisplayUnits(Food.FoodSize), Color.Green);
         }
 
         public override void Initialize()

@@ -6,7 +6,7 @@ namespace Mindvolving.Visualization.Engine.Entities
 {
     public class Food : Entity
     {
-        public const int FoodSize = 15;
+        public const float FoodSize = 0.3f;
 
         public Food()
         {
