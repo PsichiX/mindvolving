@@ -21,6 +21,11 @@ namespace Mindvolving.Visualization
             return vector.Select(v => { v = FarseerPhysics.ConvertUnits.ToDisplayUnits(v); return new Vector2(v.X, v.Y); }).ToArray();
         }
 
+        public static FarseerPhysics.Common.Vector2[] ToFPVector2(this Vector2[] vector)
+        {
+            return vector.Select(v => FarseerPhysics.ConvertUnits.ToSimUnits(new FarseerPhysics.Common.Vector2(v.X, v.Y))).ToArray();
+        }
+
         public static Matrix ToMGMatrix(this FarseerPhysics.Common.Matrix matrix)
         {
             return new Matrix()

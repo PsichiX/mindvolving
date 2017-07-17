@@ -44,9 +44,11 @@
   <ItemGroup>
     <Compile Include="Engine\Camera.cs" />
     <Compile Include="Engine\CollisionEventArgs.cs" />
+    <Compile Include="Engine\Controllers\SeaCurrentsController.cs" />
     <Compile Include="Engine\Entities\Entity.cs" />
     <Compile Include="Engine\Enviroment\Bubble.cs" />
     <Compile Include="Engine\Enviroment\Decal.cs" />
+    <Compile Include="Engine\Input\KeyEventArgs.cs" />
     <Compile Include="Engine\IWorldElement.cs" />
     <Compile Include="Engine\WorldObject.cs" />
     <Compile Include="Engine\World.cs" />

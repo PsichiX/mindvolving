@@ -16,20 +16,24 @@ namespace Mindvolving.Visualization.Renderers
 
         public override void Draw(GameTime gt)
         {
-            Visualization.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Visualization.Camera.View);
             base.Draw(gt);
+
+            Visualization.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, Visualization.Camera.View);
 
             for(int i = 0; i < world.Entities.Count; i++)
             {
                 world.Entities[i].Renderer.Draw(gt);
             }
+
             Visualization.SpriteBatch.End();
 
             Visualization.SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.Additive, null, null, null, null, Visualization.Camera.View);
+
             for (int i = 0; i < world.Decals.Count; i++)
             {
                 world.Decals[i].Renderer.Draw(gt);
             }
+
             Visualization.SpriteBatch.End();
         }
 
