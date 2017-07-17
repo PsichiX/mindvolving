@@ -1,20 +1,18 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-using System.Linq;
-using FarseerPhysics.Collision.Shapes;
+﻿using Microsoft.Xna.Framework;
+using Mindvolving.Organisms;
 
-namespace Mindvolving.Visualization.Renderers
+namespace Mindvolving.Visualization.Renderers.Organisms
 {
     public class MuscleRenderer : Renderer
     {
-        public Organisms.Muscle Muscle { get; set; }
+        public Muscle Muscle { get; set; }
 
         public MuscleRenderer()
         {
 
         }
 
-        public MuscleRenderer(Organisms.Muscle muscle)
+        public MuscleRenderer(Muscle muscle)
         {
             Muscle = muscle;
         }

@@ -1,6 +1,6 @@
-﻿using System;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Mindvolving.Visualization.Engine.Entities;
+using Mindvolving.Visualization.Renderers.Organisms;
 
 namespace Mindvolving.Visualization.Renderers.Entities
 {

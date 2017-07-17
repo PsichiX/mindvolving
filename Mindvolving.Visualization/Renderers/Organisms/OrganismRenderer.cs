@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using Mindvolving.Organisms;
 
-namespace Mindvolving.Visualization.Renderers
+namespace Mindvolving.Visualization.Renderers.Organisms
 {
     public class OrganismRenderer : Renderer
     {
@@ -11,14 +11,14 @@ namespace Mindvolving.Visualization.Renderers
         private MuscleRenderer muscleRenderer;
         private BoneRenderer boneRenderer;
 
-        public Organisms.Organism Organism { get; set; }
+        public Organism Organism { get; set; }
 
         public OrganismRenderer()
         {
 
         }
 
-        public OrganismRenderer(Organisms.Organism organism)
+        public OrganismRenderer(Organism organism)
             : this()
         {
             Organism = organism;

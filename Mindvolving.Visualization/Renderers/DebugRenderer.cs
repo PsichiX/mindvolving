@@ -462,17 +462,6 @@ namespace Mindvolving.Visualization.Renderers
             _localView = Matrix.Identity;
         }
 
-        #region Nested type: ContactPoint
-
-        private struct ContactPoint
-        {
-            public Vector2 Normal;
-            public Vector2 Position;
-            public PointState State;
-        }
-
-        #endregion
-
         #region Nested type: StringData
 
         private struct StringData

@@ -3,7 +3,7 @@ using FarseerPhysics.Collision.Shapes;
 using System.Linq;
 using Mindvolving.Organisms;
 
-namespace Mindvolving.Visualization.Renderers
+namespace Mindvolving.Visualization.Renderers.Organisms
 {
     public class OrganRenderer : Renderer
     {

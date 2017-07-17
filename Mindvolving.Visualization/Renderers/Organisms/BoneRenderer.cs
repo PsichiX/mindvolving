@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Mindvolving.Organisms;
 
-namespace Mindvolving.Visualization.Renderers
+namespace Mindvolving.Visualization.Renderers.Organisms
 {
     public class BoneRenderer : Renderer
     {
