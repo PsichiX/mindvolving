@@ -74,7 +74,7 @@ namespace Mindvolving.Visualization.Renderers
         /// </summary>
         /// <param name="projection">The projection.</param>
         /// <param name="view">The view.</param>
-        public void Begin(ref Matrix projection, ref Matrix view)
+        public void Begin(Matrix projection, Matrix view)
         {
             if (_hasBegun)
                 throw new InvalidOperationException("End must be called before Begin can be called again.");

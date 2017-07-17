@@ -51,6 +51,10 @@ namespace Mindvolving.Visualization
 
             Physics.ConvertUnits.SetDisplayUnitToSimUnitRatio(50);
 
+            graphics.PreferredBackBufferWidth = 1280;
+            graphics.PreferredBackBufferHeight = 720;
+            graphics.ApplyChanges();
+
             InputManager = CreateVisualizationComponent<InputManager>();
             InputManager.KeyUp += InputManager_KeyUp;
 

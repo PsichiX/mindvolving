@@ -27,23 +27,15 @@ namespace Mindvolving.Visualization.Renderers
     public class DebugViewRenderer : DebugViewBase, IDisposable
     {
         //Drawing
-        private PrimitiveBatch _primitiveBatch;
-        private SpriteBatch _batch;
-        private SpriteFont _font;
-        private GraphicsDevice _device;
-        private FP.Vector2[] _tempVertices = new FP.Vector2[Settings.MaxPolygonVertices];
-        private List<StringData> _stringData;
-
-        private MG.Matrix _localProjection;
-        private MG.Matrix _localView;
+        private DebugRenderer debugRenderer;
 
         //Shapes
-        public MG.Color DefaultShapeColor = new MG.Color(0.9f, 0.7f, 0.7f);
-        public MG.Color InactiveShapeColor = new MG.Color(0.5f, 0.5f, 0.3f);
-        public MG.Color KinematicShapeColor = new MG.Color(0.5f, 0.5f, 0.9f);
-        public MG.Color SleepingShapeColor = new MG.Color(0.6f, 0.6f, 0.6f);
-        public MG.Color StaticShapeColor = new MG.Color(0.5f, 0.9f, 0.5f);
-        public MG.Color TextColor = MG.Color.White;
+        public Color DefaultShapeColor = new Color(0.9f, 0.7f, 0.7f);
+        public Color InactiveShapeColor = new Color(0.5f, 0.5f, 0.3f);
+        public Color KinematicShapeColor = new Color(0.5f, 0.5f, 0.9f);
+        public Color SleepingShapeColor = new Color(0.6f, 0.6f, 0.6f);
+        public Color StaticShapeColor = new Color(0.5f, 0.9f, 0.5f);
+        public Color TextColor = Color.White;
 
         //Contacts
         private int _pointCount;
@@ -51,7 +43,7 @@ namespace Mindvolving.Visualization.Renderers
         private ContactPoint[] _points = new ContactPoint[MaxContactPoints];
 
         //Debug panel
-        public Vector2 DebugPanelPosition = new Vector2(55, 100);
+        public Vector2 DebugPanelPosition = new Vector2(0, 0);
         private float _max;
         private float _avg;
         private float _min;
@@ -63,7 +55,7 @@ namespace Mindvolving.Visualization.Renderers
         public float MinimumValue;
         public float MaximumValue = 10;
         private List<float> _graphValues = new List<float>(500);
-        public MG.Rectangle PerformancePanelBounds = new MG.Rectangle(330, 100, 200, 100);
+        public Rectangle PerformancePanelBounds = new Rectangle(330, 100, 200, 100);
         private Vector2[] _background = new Vector2[4];
         public bool Enabled = true;
 
@@ -82,6 +74,8 @@ namespace Mindvolving.Visualization.Renderers
             AppendFlags(DebugViewFlags.Shape);
             AppendFlags(DebugViewFlags.Controllers);
             AppendFlags(DebugViewFlags.Joint);
+
+            debugRenderer = new Renderers.DebugRenderer();
         }
 
         #region IDisposable Members
@@ -140,18 +134,18 @@ namespace Mindvolving.Visualization.Renderers
                     foreach (Fixture f in b.FixtureList)
                     {
                         if (b.Enabled == false)
-                            DrawShape(f, xf, InactiveShapeColor);
+                            debugRenderer.DrawShape(f, xf, InactiveShapeColor);
                         else if (b.BodyType == BodyType.Static)
-                            DrawShape(f, xf, StaticShapeColor);
+                            debugRenderer.DrawShape(f, xf, StaticShapeColor);
                         else if (b.BodyType == BodyType.Kinematic)
-                            DrawShape(f, xf, KinematicShapeColor);
+                            debugRenderer.DrawShape(f, xf, KinematicShapeColor);
                         else if (b.Awake == false)
-                            DrawShape(f, xf, SleepingShapeColor);
+                            debugRenderer.DrawShape(f, xf, SleepingShapeColor);
                         else
-                            DrawShape(f, xf, DefaultShapeColor);
+                            debugRenderer.DrawShape(f, xf, DefaultShapeColor);
                     }
 
-                    DrawString(b.Position.ToMGVector2(), string.Format("F={0:0.000}", b.LinearVelocity.Length())); 
+                    debugRenderer.DrawString(b.Position.ToMGVector2(), string.Format("F={0:0.000}", b.LinearVelocity.Length()), TextColor); 
                 }
             }
 
@@ -164,15 +158,15 @@ namespace Mindvolving.Visualization.Renderers
                     ContactPoint point = _points[i];
 
                     if (point.State == PointState.Add)
-                        DrawPoint(point.Position, 0.1f, new MG.Color(0.3f, 0.95f, 0.3f));
+                        debugRenderer.DrawPoint(point.Position, 0.1f, new Color(0.3f, 0.95f, 0.3f));
                     else if (point.State == PointState.Persist)
-                        DrawPoint(point.Position, 0.1f, new MG.Color(0.3f, 0.3f, 0.95f));
+                        debugRenderer.DrawPoint(point.Position, 0.1f, new Color(0.3f, 0.3f, 0.95f));
 
                     if ((Flags & DebugViewFlags.ContactNormals) == DebugViewFlags.ContactNormals)
                     {
                         Vector2 p1 = point.Position;
                         Vector2 p2 = p1 + axisScale * point.Normal;
-                        DrawSegment(p1, p2, new MG.Color(0.4f, 0.9f, 0.4f));
+                        debugRenderer.DrawSegment(p1, p2, new Color(0.4f, 0.9f, 0.4f));
                     }
                 }
 
@@ -194,7 +188,7 @@ namespace Mindvolving.Visualization.Renderers
                             for (int i = 0; i < polygon.Vertices.Count; i++)
                             {
                                 Vector2 tmp = FP.MathUtils.Mul(ref xf, polygon.Vertices[i]).ToMGVector2();
-                                DrawPoint(tmp, 0.1f, MG.Color.Red);
+                                debugRenderer.DrawPoint(tmp, 0.1f, Color.Red);
                             }
                         }
                     }
@@ -205,13 +199,13 @@ namespace Mindvolving.Visualization.Renderers
             {
                 foreach (Joint j in World.JointList)
                 {
-                    DrawJoint(j);
+                    debugRenderer.DrawJoint(j);
                 }
             }
 
             if ((Flags & DebugViewFlags.AABB) == DebugViewFlags.AABB)
             {
-                MG.Color color = new MG.Color(0.9f, 0.3f, 0.9f);
+                Color color = new Color(0.9f, 0.3f, 0.9f);
                 IBroadPhase bp = World.ContactManager.BroadPhase;
 
                 foreach (Body body in World.BodyList)
@@ -227,7 +221,7 @@ namespace Mindvolving.Visualization.Renderers
                             AABB aabb;
                             bp.GetFatAABB(proxy.ProxyId, out aabb);
 
-                            DrawAABB(ref aabb, color);
+                            debugRenderer.DrawAABB(aabb, color);
                         }
                     }
                 }
@@ -254,18 +248,18 @@ namespace Mindvolving.Visualization.Renderers
                     if (buoyancy != null)
                     {
                         AABB container = buoyancy.Container;
-                        DrawAABB(ref container, MG.Color.LightBlue);
+                        debugRenderer.DrawAABB(container, Color.LightBlue);
                     }
 
                     SeaCurrentsController seaCurrents = controller as SeaCurrentsController;
                     if (seaCurrents != null)
                     {
-                        DrawCircle(seaCurrents.Position, seaCurrents.Radius, MG.Color.LightBlue);
+                        debugRenderer.DrawCircle(seaCurrents.Position, seaCurrents.Radius, Color.LightBlue);
 
                         FP.Vector2 dir = seaCurrents.Direction;
                         dir.Normalize();
 
-                        DrawArrow(seaCurrents.Position, seaCurrents.Position + dir * seaCurrents.Strength, 5, 8, true, Color.Green);
+                        debugRenderer.DrawArrow(seaCurrents.Position, seaCurrents.Position + dir * seaCurrents.Strength, 5, 8, true, Color.Green);
                     }
                 }
             }
@@ -308,15 +302,15 @@ namespace Mindvolving.Visualization.Renderers
                     Vector2 x1 = new Vector2(MathHelper.Clamp(x, PerformancePanelBounds.Left, PerformancePanelBounds.Right), MathHelper.Clamp(y1, PerformancePanelBounds.Top, PerformancePanelBounds.Bottom));
                     Vector2 x2 = new Vector2(MathHelper.Clamp(x + deltaX, PerformancePanelBounds.Left, PerformancePanelBounds.Right), MathHelper.Clamp(y2, PerformancePanelBounds.Top, PerformancePanelBounds.Bottom));
 
-                    DrawSegment(x1, x2, MG.Color.LightGreen);
+                    debugRenderer.DrawSegment(x1, x2, Color.LightGreen);
 
                     x += deltaX;
                 }
             }
 
-            DrawString(PerformancePanelBounds.Right + 10, PerformancePanelBounds.Top, string.Format("Max: {0} ms", _max));
-            DrawString(PerformancePanelBounds.Right + 10, PerformancePanelBounds.Center.Y - 7, string.Format("Avg: {0} ms", _avg));
-            DrawString(PerformancePanelBounds.Right + 10, PerformancePanelBounds.Bottom - 15, string.Format("Min: {0} ms", _min));
+            debugRenderer.DrawString(PerformancePanelBounds.Right + 10, PerformancePanelBounds.Top, string.Format("Max: {0} ms", _max), TextColor);
+            debugRenderer.DrawString(PerformancePanelBounds.Right + 10, PerformancePanelBounds.Center.Y - 7, string.Format("Avg: {0} ms", _avg), TextColor);
+            debugRenderer.DrawString(PerformancePanelBounds.Right + 10, PerformancePanelBounds.Bottom - 15, string.Format("Min: {0} ms", _min), TextColor);
 
             //Draw background.
             _background[0] = new Vector2(PerformancePanelBounds.X, PerformancePanelBounds.Y);
@@ -324,7 +318,7 @@ namespace Mindvolving.Visualization.Renderers
             _background[2] = new Vector2(PerformancePanelBounds.X + PerformancePanelBounds.Width, PerformancePanelBounds.Y + PerformancePanelBounds.Height);
             _background[3] = new Vector2(PerformancePanelBounds.X + PerformancePanelBounds.Width, PerformancePanelBounds.Y);
 
-            DrawSolidPolygon(_background, 4, MG.Color.DarkGray, true);
+            debugRenderer.DrawSolidPolygon(_background, 4, Color.DarkGray, true);
         }
 
         private void DrawDebugPanel()
@@ -338,6 +332,8 @@ namespace Mindvolving.Visualization.Renderers
             int x = (int)DebugPanelPosition.X;
             int y = (int)DebugPanelPosition.Y;
 
+
+            debugRenderer.DrawSolidRectangle(new Rectangle(0, 0, 300, 400), Color.Black);
 #if XBOX
             _debugPanelSb = new StringBuilder();
 #else
@@ -350,7 +346,7 @@ namespace Mindvolving.Visualization.Renderers
             _debugPanelSb.Append("- Joints: ").AppendLine(World.JointList.Count.ToString());
             _debugPanelSb.Append("- Controllers: ").AppendLine(World.ControllerList.Count.ToString());
             _debugPanelSb.Append("- Proxies: ").AppendLine(World.ProxyCount.ToString());
-            DrawString(x, y, _debugPanelSb.ToString());
+            debugRenderer.DrawString(x, y, _debugPanelSb.ToString(), TextColor);
 
 #if XBOX
             _debugPanelSb = new StringBuilder();
@@ -364,299 +360,33 @@ namespace Mindvolving.Visualization.Renderers
             _debugPanelSb.Append("- Joint: ").AppendLine(string.Format("{0} ms", World.Island.JointUpdateTime / TimeSpan.TicksPerMillisecond));
             _debugPanelSb.Append("- Controller: ").AppendLine(string.Format("{0} ms", World.ControllersUpdateTime / TimeSpan.TicksPerMillisecond));
             _debugPanelSb.Append("- Total: ").AppendLine(string.Format("{0} ms", World.UpdateTime / TimeSpan.TicksPerMillisecond));
-            DrawString(x + 110, y, _debugPanelSb.ToString());
+            debugRenderer.DrawString(x + 110, y, _debugPanelSb.ToString(), TextColor);
         }
 
-        public void DrawAABB(ref AABB aabb, MG.Color color)
-        {
-            Vector2[] verts = new Vector2[4];
-            verts[0] = new Vector2(aabb.LowerBound.X, aabb.LowerBound.Y);
-            verts[1] = new Vector2(aabb.UpperBound.X, aabb.LowerBound.Y);
-            verts[2] = new Vector2(aabb.UpperBound.X, aabb.UpperBound.Y);
-            verts[3] = new Vector2(aabb.LowerBound.X, aabb.UpperBound.Y);
-
-            DrawPolygon(verts, 4, color);
-        }
-
-        private void DrawJoint(Joint joint)
-        {
-            if (!joint.Enabled)
-                return;
-
-            Body b1 = joint.BodyA;
-            Body b2 = joint.BodyB;
-            FP.Transform xf1;
-            b1.GetTransform(out xf1);
-
-            FP.Vector2 x2 = FP.Vector2.Zero;
-
-            // WIP David
-            if (!joint.IsFixedType())
-            {
-                FP.Transform xf2;
-                b2.GetTransform(out xf2);
-                x2 = xf2.p;
-            }
-
-            FP.Vector2 p1 = joint.WorldAnchorA;
-            FP.Vector2 p2 = joint.WorldAnchorB;
-            FP.Vector2 x1 = xf1.p;
-
-            Color color = new Color(0.5f, 0.8f, 0.8f);
-
-            switch (joint.JointType)
-            {
-                case JointType.Distance:
-                    DrawSegment(p1, p2, color);
-                    break;
-                case JointType.Pulley:
-                    PulleyJoint pulley = (PulleyJoint)joint;
-                    FP.Vector2 s1 = b1.GetWorldPoint(pulley.LocalAnchorA);
-                    FP.Vector2 s2 = b2.GetWorldPoint(pulley.LocalAnchorB);
-                    DrawSegment(p1, p2, color);
-                    DrawSegment(p1, s1, color);
-                    DrawSegment(p2, s2, color);
-                    break;
-                case JointType.FixedMouse:
-                    DrawPoint(p1, 0.5f, new MG.Color(0.0f, 1.0f, 0.0f));
-                    DrawSegment(p1, p2, new MG.Color(0.8f, 0.8f, 0.8f));
-                    break;
-                case JointType.Revolute:
-                    DrawSegment(x1, p1, color);
-                    DrawSegment(p1, p2, color);
-                    DrawSegment(x2, p2, color);
-
-                    DrawSolidCircle(p2, 0.1f, FP.Vector2.Zero, MG.Color.Red);
-                    DrawSolidCircle(p1, 0.1f, FP.Vector2.Zero, MG.Color.Blue);
-                    break;
-                case JointType.FixedAngle:
-                    //Should not draw anything.
-                    break;
-                case JointType.FixedRevolute:
-                    DrawSegment(x1, p1, color);
-                    DrawSolidCircle(p1, 0.1f, FP.Vector2.Zero, MG.Color.Pink);
-                    break;
-                case JointType.FixedLine:
-                    DrawSegment(x1, p1, color);
-                    DrawSegment(p1, p2, color);
-                    break;
-                case JointType.FixedDistance:
-                    DrawSegment(x1, p1, color);
-                    DrawSegment(p1, p2, color);
-                    break;
-                case JointType.FixedPrismatic:
-                    DrawSegment(x1, p1, color);
-                    DrawSegment(p1, p2, color);
-                    break;
-                case JointType.Gear:
-                    DrawSegment(x1, x2, color);
-                    break;
-                default:
-                    DrawSegment(x1, p1, color);
-                    DrawSegment(p1, p2, color);
-                    DrawSegment(x2, p2, color);
-                    break;
-            }
-        }
-
-        public void DrawShape(Fixture fixture, FP.Transform xf, MG.Color color)
-        {
-            switch (fixture.Shape.ShapeType)
-            {
-                case ShapeType.Circle:
-                    {
-                        CircleShape circle = (CircleShape)fixture.Shape;
-
-                        FP.Vector2 center = FP.MathUtils.Mul(ref xf, circle.Position);
-                        float radius = circle.Radius;
-                        FP.Vector2 axis = FP.MathUtils.Mul(xf.q, new FP.Vector2(1.0f, 0.0f));
-
-                        DrawSolidCircle(center, radius, axis, color);
-                    }
-                    break;
-
-                case ShapeType.Polygon:
-                    {
-                        PolygonShape poly = (PolygonShape)fixture.Shape;
-                        int vertexCount = poly.Vertices.Count;
-                        Debug.Assert(vertexCount <= Settings.MaxPolygonVertices);
-
-                        for (int i = 0; i < vertexCount; ++i)
-                        {
-                            _tempVertices[i] = FP.MathUtils.Mul(ref xf, poly.Vertices[i]);
-                        }
-
-                        DrawSolidPolygon(_tempVertices, vertexCount, color);
-                    }
-                    break;
-
-
-                case ShapeType.Edge:
-                    {
-                        EdgeShape edge = (EdgeShape)fixture.Shape;
-                        FP.Vector2 v1 = FP.MathUtils.Mul(ref xf, edge.Vertex1);
-                        FP.Vector2 v2 = FP.MathUtils.Mul(ref xf, edge.Vertex2);
-                        DrawSegment(v1, v2, color);
-                    }
-                    break;
-
-                case ShapeType.Chain:
-                    {
-                        ChainShape chain = (ChainShape)fixture.Shape;
-
-                        for (int i = 0; i < chain.Vertices.Count - 1; ++i)
-                        {
-                            FP.Vector2 v1 = FP.MathUtils.Mul(ref xf, chain.Vertices[i]);
-                            FP.Vector2 v2 = FP.MathUtils.Mul(ref xf, chain.Vertices[i + 1]);
-                            DrawSegment(v1, v2, color);
-                        }
-                    }
-                    break;
-            }
-        }
-
+        #region DebugViewBase
         public override void DrawPolygon(FP.Vector2[] vertices, int count, float red, float green, float blue, bool closed = true)
         {
-            DrawPolygon(vertices.ToMGVector2(), count, new MG.Color(red, green, blue), closed);
-        }
-
-        public void DrawPolygon(Vector2[] vertices, int count, MG.Color color, bool closed = true)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            for (int i = 0; i < count - 1; i++)
-            {
-                _primitiveBatch.AddVertex(vertices[i], color, PrimitiveType.LineList);
-                _primitiveBatch.AddVertex(vertices[i + 1], color, PrimitiveType.LineList);
-            }
-            if (closed)
-            {
-                _primitiveBatch.AddVertex(vertices[count - 1], color, PrimitiveType.LineList);
-                _primitiveBatch.AddVertex(vertices[0], color, PrimitiveType.LineList);
-            }
+            debugRenderer.DrawPolygon(vertices.ToMGVector2(), count, new Color(red, green, blue), closed);
         }
 
         public override void DrawSolidPolygon(FP.Vector2[] vertices, int count, float red, float green, float blue)
         {
-            DrawSolidPolygon(vertices.ToMGVector2(), count, new MG.Color(red, green, blue));
-        }
-
-        public void DrawSolidPolygon(FP.Vector2[] vertices, int count, MG.Color color, bool outline = true)
-        {
-            DrawSolidPolygon(vertices.ToMGVector2(), count, color, outline);
-        }
-
-        public void DrawSolidPolygon(Vector2[] vertices, int count, MG.Color color, bool outline = true)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            if (count == 2)
-            {
-                DrawPolygon(vertices, count, color);
-                return;
-            }
-
-            MG.Color colorFill = color * (outline ? 0.5f : 1.0f);
-
-            for (int i = 1; i < count - 1; i++)
-            {
-                _primitiveBatch.AddVertex(vertices[0], colorFill, PrimitiveType.TriangleList);
-                _primitiveBatch.AddVertex(vertices[i], colorFill, PrimitiveType.TriangleList);
-                _primitiveBatch.AddVertex(vertices[i + 1], colorFill, PrimitiveType.TriangleList);
-            }
-
-            if (outline)
-                DrawPolygon(vertices, count, color);
+            debugRenderer.DrawSolidPolygon(vertices.ToMGVector2(), count, new Color(red, green, blue));
         }
 
         public override void DrawCircle(FP.Vector2 center, float radius, float red, float green, float blue)
         {
-            DrawCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), new MG.Color(red, green, blue));
-        }
-
-        public void DrawCircle(FP.Vector2 center, float radius, MG.Color color)
-        {
-            DrawCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), color);
-        }
-
-        public void DrawCircle(Vector2 center, float radius, MG.Color color)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            const double increment = Math.PI * 2.0 / CircleSegments;
-            double theta = 0.0;
-
-            for (int i = 0; i < CircleSegments; i++)
-            {
-                Vector2 v1 = center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
-                Vector2 v2 = center + radius * new Vector2((float)Math.Cos(theta + increment), (float)Math.Sin(theta + increment));
-
-                _primitiveBatch.AddVertex(v1, color, PrimitiveType.LineList);
-                _primitiveBatch.AddVertex(v2, color, PrimitiveType.LineList);
-
-                theta += increment;
-            }
+            debugRenderer.DrawCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), new Color(red, green, blue));
         }
 
         public override void DrawSolidCircle(FP.Vector2 center, float radius, FP.Vector2 axis, float red, float green, float blue)
         {
-            DrawSolidCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), axis.ToMGVector2(), new Color(red, green, blue));
-        }
-
-        public void DrawSolidCircle(FP.Vector2 center, float radius, FP.Vector2 axis, MG.Color color)
-        {
-            DrawSolidCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), new Vector2(axis.X, axis.Y), color);
-        }
-
-        public void DrawSolidCircle(Vector2 center, float radius, Vector2 axis, MG.Color color)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            const double increment = Math.PI * 2.0 / CircleSegments;
-            double theta = 0.0;
-
-            MG.Color colorFill = color * 0.5f;
-
-            Vector2 v0 = center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
-            theta += increment;
-
-            for (int i = 1; i < CircleSegments - 1; i++)
-            {
-                Vector2 v1 = center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
-                Vector2 v2 = center + radius * new Vector2((float)Math.Cos(theta + increment), (float)Math.Sin(theta + increment));
-
-                _primitiveBatch.AddVertex(v0, colorFill, PrimitiveType.TriangleList);
-                _primitiveBatch.AddVertex(v1, colorFill, PrimitiveType.TriangleList);
-                _primitiveBatch.AddVertex(v2, colorFill, PrimitiveType.TriangleList);
-
-                theta += increment;
-            }
-
-            DrawCircle(center, radius, color);
-            DrawSegment(center, center + axis * radius, color);
+            debugRenderer.DrawSolidCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), axis.ToMGVector2(), new Color(red, green, blue));
         }
 
         public override void DrawSegment(FP.Vector2 start, FP.Vector2 end, float red, float green, float blue)
         {
-            DrawSegment(start, end, new MG.Color(red, green, blue));
-        }
-
-        public void DrawSegment(FP.Vector2 start, FP.Vector2 end, Color color)
-        {
-            DrawSegment(start.ToMGVector2(), end.ToMGVector2(), color);
-        }
-
-        public void DrawSegment(Vector2 start, Vector2 end, Color color)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            _primitiveBatch.AddVertex(start, color, PrimitiveType.LineList);
-            _primitiveBatch.AddVertex(end, color, PrimitiveType.LineList);
+            debugRenderer.DrawSegment(start, end, new Color(red, green, blue));
         }
 
         public override void DrawTransform(ref FP.Transform transform)
@@ -665,118 +395,14 @@ namespace Mindvolving.Visualization.Renderers
             FP.Vector2 p1 = transform.p;
 
             FP.Vector2 p2 = p1 + axisScale * transform.q.GetXAxis();
-            DrawSegment(p1, p2, MG.Color.Red);
+            debugRenderer.DrawSegment(p1, p2, Color.Red);
 
             p2 = p1 + axisScale * transform.q.GetYAxis();
-            DrawSegment(p1, p2, MG.Color.Green);
+            debugRenderer.DrawSegment(p1, p2, Color.Green);
         }
+        #endregion
 
-        public void DrawPoint(FP.Vector2 p, float size, Color color)
-        {
-            DrawPoint(p.ToMGVector2(), ConvertUnits.ToDisplayUnits(size), color);
-        }
-
-        public void DrawPoint(Vector2 p, float size, Color color)
-        {
-            Vector2[] verts = new Vector2[4];
-            float hs = size / 2.0f;
-            verts[0] = p + new Vector2(-hs, -hs);
-            verts[1] = p + new Vector2(hs, -hs);
-            verts[2] = p + new Vector2(hs, hs);
-            verts[3] = p + new Vector2(-hs, hs);
-
-            DrawSolidPolygon(verts, 4, color, true);
-        }
-
-        public void DrawString(int x, int y, string text)
-        {
-            DrawString(new Vector2(x, y), text);
-        }
-
-        public void DrawString(Vector2 position, string text)
-        {
-            _stringData.Add(new StringData(position, text, TextColor));
-        }
-
-        public void DrawArrow(FP.Vector2 start, FP.Vector2 end, float length, float width, bool drawStartIndicator, MG.Color color)
-        {
-            DrawArrow(start.ToMGVector2(), end.ToMGVector2(), length, width, drawStartIndicator, color);
-        }
-
-        public void DrawArrow(Vector2 start, Vector2 end, float length, float width, bool drawStartIndicator, MG.Color color)
-        {
-            // Draw connection segment between start- and end-point
-            DrawSegment(start, end, color);
-
-            // Precalculate halfwidth
-            float halfWidth = width / 2;
-
-            // Create directional reference
-            Vector2 rotation = (start - end);
-            rotation.Normalize();
-
-            // Calculate angle of directional vector
-            float angle = (float)Math.Atan2(rotation.X, -rotation.Y);
-            // Create matrix for rotation
-            Matrix rotMatrix = Matrix.CreateRotationZ(angle);
-            // Create translation matrix for end-point
-            Matrix endMatrix = Matrix.CreateTranslation(end.X, end.Y, 0);
-
-            // Setup arrow end shape
-            Vector2[] verts = new Vector2[3];
-            verts[0] = new Vector2(0, 0);
-            verts[1] = new Vector2(-halfWidth, -length);
-            verts[2] = new Vector2(halfWidth, -length);
-
-            // Rotate end shape
-            Vector2.Transform(verts, ref rotMatrix, verts);
-            // Translate end shape
-            Vector2.Transform(verts, ref endMatrix, verts);
-
-            // Draw arrow end shape
-            DrawSolidPolygon(verts, 3, color, false);
-
-            if (drawStartIndicator)
-            {
-                // Create translation matrix for start
-                Matrix startMatrix = Matrix.CreateTranslation(start.X, start.Y, 0);
-                // Setup arrow start shape
-                Vector2[] baseVerts = new Vector2[4];
-                baseVerts[0] = new Vector2(-halfWidth, length / 4);
-                baseVerts[1] = new Vector2(halfWidth, length / 4);
-                baseVerts[2] = new Vector2(halfWidth, 0);
-                baseVerts[3] = new Vector2(-halfWidth, 0);
-
-                // Rotate start shape
-                Vector2.Transform(baseVerts, ref rotMatrix, baseVerts);
-                // Translate start shape
-                Vector2.Transform(baseVerts, ref startMatrix, baseVerts);
-                // Draw start shape
-                DrawSolidPolygon(baseVerts, 4, color, false);
-            }
-        }
-
-        public void BeginCustomDraw(MG.Matrix projection, MG.Matrix view)
-        {
-            BeginCustomDraw(ref projection, ref view);
-        }
-
-        public void BeginCustomDraw(ref MG.Matrix projection, ref MG.Matrix view)
-        {
-            _primitiveBatch.Begin(ref projection, ref view);
-        }
-
-        public void EndCustomDraw()
-        {
-            _primitiveBatch.End();
-        }
-
-        public void RenderDebugData(MG.Matrix projection, MG.Matrix view)
-        {
-            RenderDebugData(ref projection, ref view);
-        }
-
-        public void RenderDebugData(ref MG.Matrix projection, ref MG.Matrix view)
+        public void RenderDebugData(Matrix projection, Matrix view)
         {
             if (!Enabled)
                 return;
@@ -785,55 +411,34 @@ namespace Mindvolving.Visualization.Renderers
             if (Flags == 0)
                 return;
 
-            _device.RasterizerState = RasterizerState.CullNone;
-            _device.DepthStencilState = DepthStencilState.Default;
-
-            _primitiveBatch.Begin(ref projection, ref view);
+            debugRenderer.Beign(projection, view);
             DrawDebugData();
-            _primitiveBatch.End();
+            debugRenderer.End();
 
             if ((Flags & DebugViewFlags.PerformanceGraph) == DebugViewFlags.PerformanceGraph)
             {
-                _primitiveBatch.Begin(ref _localProjection, ref _localView);
+                debugRenderer.Beign(projection, view);
                 DrawPerformanceGraph();
-                _primitiveBatch.End();
+                debugRenderer.End();
             }
 
-            // begin the sprite batch effect
-            _batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, view);
-
-            // draw any strings we have
-            for (int i = 0; i < _stringData.Count; i++)
-            {
-                _batch.DrawString(_font, _stringData[i].Text, _stringData[i].Position, _stringData[i].Color);
-            }
-
-            // end the sprite batch effect
-            _batch.End();
-
-            _stringData.Clear();
+            debugRenderer.Begin(projection);
+            DrawDebugPanel();
+            debugRenderer.End();
         }
 
-        public void RenderDebugData(ref MG.Matrix projection)
+        public void RenderDebugData(Matrix projection)
         {
             if (!Enabled)
                 return;
 
-            MG.Matrix view = MG.Matrix.Identity;
-            RenderDebugData(ref projection, ref view);
+            Matrix view = Matrix.Identity;
+            RenderDebugData(projection, view);
         }
 
         public void LoadContent(GraphicsDevice device, ContentManager content)
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            _device = device;
-            _batch = new SpriteBatch(_device);
-            _primitiveBatch = new PrimitiveBatch(_device, 1000);
-            _font = content.Load<SpriteFont>("Font");
-            _stringData = new List<StringData>();
-
-            _localProjection = MG.Matrix.CreateOrthographicOffCenter(0f, _device.Viewport.Width, _device.Viewport.Height, 0f, 0f, 1f);
-            _localView = MG.Matrix.Identity;
+            debugRenderer.LoadContent(device, content);
         }
 
         #region Nested type: ContactPoint
@@ -843,24 +448,6 @@ namespace Mindvolving.Visualization.Renderers
             public Vector2 Normal;
             public Vector2 Position;
             public PointState State;
-        }
-
-        #endregion
-
-        #region Nested type: StringData
-
-        private struct StringData
-        {
-            public MG.Color Color;
-            public string Text;
-            public Vector2 Position;
-
-            public StringData(Vector2 position, string text, MG.Color color)
-            {
-                Position = position;
-                Text = text;
-                Color = color;
-            }
         }
 
         #endregion
