@@ -1,20 +1,15 @@
-﻿using FarseerPhysics.Collision.Shapes;
-using FarseerPhysics.Dynamics;
-using FPCommon = FarseerPhysics.Common;
+﻿using FarseerPhysics.Dynamics;
 using Physics = FarseerPhysics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Mindvolving.Visualization.Renderers;
-using FarseerPhysics.Factories;
-using FarseerPhysics.Dynamics.Joints;
 using Mindvolving.Visualization.Engine;
 using Mindvolving.Visualization.Engine.Input;
 using Mindvolving.Visualization.Screens;
 using System;
 using Mindvolving.Visualization.Engine.Entities;
 using Mindvolving.Visualization.Engine.Enviroment;
-using System.Collections.Generic;
 
 namespace Mindvolving.Visualization
 {
@@ -22,7 +17,6 @@ namespace Mindvolving.Visualization
     {
         private GraphicsDeviceManager graphics;
         private Screen currentScreen;
-        private bool debugModeKey;
         
         public SpriteBatch SpriteBatch { get; private set; }
         public TextureManager Textures { get; private set; }
@@ -54,11 +48,24 @@ namespace Mindvolving.Visualization
         protected override void Initialize()
         {
             IsMouseVisible = true;
-            debugModeKey = false;
 
             Physics.ConvertUnits.SetDisplayUnitToSimUnitRatio(50);
 
+            InputManager = CreateVisualizationComponent<InputManager>();
+            InputManager.KeyUp += InputManager_KeyUp;
+
             base.Initialize();
+        }
+
+        private void InputManager_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Keys.F12)
+            {
+                if (currentScreen is VisualizationScreen)
+                    ChangeScreen<DebugScreen>();
+                else
+                    ChangeScreen<VisualizationScreen>();
+            }
         }
 
         protected override void LoadContent()
@@ -66,7 +73,6 @@ namespace Mindvolving.Visualization
             Camera = new Camera(GraphicsDevice);
             SpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            InputManager = CreateVisualizationComponent<InputManager>();
             Textures = CreateVisualizationComponent<TextureManager>();
             Primitive2DRenderer = CreateVisualizationComponent<Primitive2DRenderer>();
             World = CreateVisualizationComponent<Engine.World>();
@@ -88,22 +94,14 @@ namespace Mindvolving.Visualization
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            if (!debugModeKey && InputManager.KeyboardState.IsKeyDown(Keys.F12))
-            {
-                debugModeKey = true;
-
-                if (currentScreen is VisualizationScreen)
-                    ChangeScreen<DebugScreen>();
-                else
-                    ChangeScreen<VisualizationScreen>();
-            }
-            else if (InputManager.KeyboardState.IsKeyUp(Keys.F12))
-                debugModeKey = false;
+            InputManager.Update(gameTime);
 
             currentScreen.Update(gameTime);
 
             base.Update(gameTime);
         }
+
+
 
         protected override void Draw(GameTime gameTime)
         {
@@ -116,26 +114,6 @@ namespace Mindvolving.Visualization
 
         private void PreparePhysicsTestScene()
         {
-            // Physics simulation
-            //var rigidBody1 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 200), 0, BodyType.Dynamic);
-            //rigidBody1.CreateFixture(new CircleShape(20, 1));
-            //var rigidBody2 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(120, 20), 0, BodyType.Dynamic);
-            //rigidBody2.CreateFixture(new CircleShape(30, 1));
-            //var rigidBody3 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(100, 100), 0, BodyType.Static);
-            //rigidBody3.CreateFixture(new CircleShape(40, 1));
-            //var rigidBody4 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
-            //rigidBody4.CreateFixture(new CircleShape(50, 1));
-
-            //World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
-            //World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
-            //World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
-
-            //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 0f });
-            //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody4, rigidBody1.Position, rigidBody4.Position, true) { DampingRatio = 0f });
-            //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody3, rigidBody2.Position, rigidBody3.Position, true) { DampingRatio = 0f, Length = 400 });
-            //world.AddJoint(new DistanceJoint(rigidBody2, rigidBody3, rigidBody2.Position, rigidBody3.Position, true) { DampingRatio = 0f });
-            //world.AddJoint(new DistanceJoint(rigidBody3, rigidBody4, rigidBody3.Position, rigidBody4.Position, true) { DampingRatio = 0f });
-
             // Organism building
             var dna = new Organisms.DNA();
             dna.Root = new Organisms.DNA.Organ() { Radius = 1 };
