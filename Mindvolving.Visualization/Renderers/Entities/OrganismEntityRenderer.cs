@@ -6,7 +6,7 @@ namespace Mindvolving.Visualization.Renderers.Entities
 {
     public class OrganismEntityRenderer : Renderer
     {
-        private BodyRenderer bodyRenderer;
+        private OrganismRenderer organismRenderer;
 
         public OrganismEntity Entity { get; private set; }
 
@@ -19,15 +19,15 @@ namespace Mindvolving.Visualization.Renderers.Entities
         {
             base.Draw(gt);
 
-            bodyRenderer.Body = Entity.OrganicBody;
-            bodyRenderer.Draw(gt);
+            organismRenderer.Organism = Entity.Organism;
+            organismRenderer.Draw(gt);
         }
 
         public override void Initialize()
         {
             base.Initialize();
 
-            bodyRenderer = Visualization.CreateRenderer<BodyRenderer>();
+            organismRenderer = Visualization.CreateRenderer<OrganismRenderer>();
         }
     }
 }

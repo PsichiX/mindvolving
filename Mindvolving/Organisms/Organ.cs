@@ -2,6 +2,7 @@
 using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Joints;
+using Mindvolving.Organisms.Physics;
 using System;
 using System.Collections.Generic;
 
@@ -34,9 +35,11 @@ namespace Mindvolving.Organisms
 			Parent = parent;
 			Radius = radius;
 			Body = new Body(organism.World, position, 0, BodyType.Dynamic, this);
-			Body.CreateFixture(new CircleShape(radius, 1));
+			Body.CreateFixture(new CircleShape(radius, 1), new OrganUserData() { Organ = this });
+			Body.UserData = new OrganUserData() { Organ = this };
 			if (parent != null) {
 				Bone = new DistanceJoint(parent.Body, Body, Vector2.Zero, Vector2.Zero);
+				Bone.UserData = new BoneUserData() { From = parent, To = this };
 				organism.World.AddJoint(Bone);
 			}
 		}
