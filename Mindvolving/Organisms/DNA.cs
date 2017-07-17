@@ -8,6 +8,7 @@ namespace Mindvolving.Organisms
 	public class DNA
 	{
 		private static char[] ATCG = new char[] { 'A', 'T', 'C', 'G' };
+		private static Random ATCGRandom = new Random();
 
 		private class MuscleComparer : IEqualityComparer<Muscle>
 		{
@@ -31,7 +32,7 @@ namespace Mindvolving.Organisms
 
 		public class Organ
 		{
-			public Guid UID { get; private set; } = Guid.NewGuid();
+			public Guid UID { get; internal set; } = Guid.NewGuid();
 			public float Radius { get; set; }
 			public float RadialOrientation { get; set; }
 			public List<Organ> Children { get; private set; } = new List<Organ>();
@@ -66,10 +67,13 @@ namespace Mindvolving.Organisms
 
 		public static DNA Deserialize(byte[] data)
 		{
-			using (var memory = new MemoryStream())
-			using (var writer = new BinaryWriter(memory)) {
+			using (var memory = new MemoryStream(data))
+			using (var reader = new BinaryReader(memory)) {
 				var dna = new DNA();
-
+				dna.Root = ReadOrgan(reader);
+				var c = reader.ReadInt32();
+				for (var i = 0; i < c; ++i)
+					dna.Muscles.Add(ReadMuscle(reader, dna));
 				return dna;
 			}
 		}
@@ -83,6 +87,16 @@ namespace Mindvolving.Organisms
 			return sb.ToString();
 		}
 
+		public static DNA FromString(string source)
+		{
+			if (source.Length % 8 != 0)
+				return null;
+			var data = new byte[source.Length >> 3];
+			for (int i = 0, c = data.Length; i < c; ++i)
+				data[i] = ReadStringByte(source.Substring(i << 3, 8));
+			return Deserialize(data);
+		}
+
 		private void WriteOrgan(BinaryWriter writer, Organ organ)
 		{
 			writer.Write(organ.UID.ToString());
@@ -91,6 +105,18 @@ namespace Mindvolving.Organisms
 			writer.Write(organ.Children.Count);
 			foreach (var child in organ.Children)
 				WriteOrgan(writer, child);
+		}
+
+		private static Organ ReadOrgan(BinaryReader reader)
+		{
+			var organ = new Organ();
+			organ.UID = new Guid(reader.ReadString());
+			organ.Radius = reader.ReadSingle();
+			organ.RadialOrientation = reader.ReadSingle();
+			var c = reader.ReadInt32();
+			for (var i = 0; i < c; ++i)
+				organ.Children.Add(ReadOrgan(reader));
+			return organ;
 		}
 
 		private void WriteMuscle(BinaryWriter writer, Muscle muscle)
@@ -102,15 +128,62 @@ namespace Mindvolving.Organisms
 			writer.Write(muscle.ContractionFactor);
 		}
 
+		private static Muscle ReadMuscle(BinaryReader reader, DNA dna)
+		{
+			var muscle = new Muscle();
+			muscle.From = FindOrgan(dna.Root, new Guid(reader.ReadString()));
+			muscle.To = FindOrgan(dna.Root, new Guid(reader.ReadString()));
+			muscle.FromRadialPosition = reader.ReadSingle();
+			muscle.ToRadialPosition = reader.ReadSingle();
+			muscle.ContractionFactor = reader.ReadSingle();
+			return muscle;
+		}
+
 		private void WriteStringByte(StringBuilder builder, byte data)
 		{
 			for (var i = 0; i < 8; ++i)
 				WriteStringBit(builder, (data & (1 << i)) != 0);
 		}
 
+		private static byte ReadStringByte(string data)
+		{
+			if (data.Length != 8)
+				throw new ArgumentException("`data` must have length of 8 characters!");
+			byte result = 0;
+			for (var i = 0; i < 8; ++i)
+				result |= (byte)((ReadStringBit(data[i]) ? 1 : 0) << i);
+			return result;
+		}
+
 		private void WriteStringBit(StringBuilder builder, bool bit)
 		{
-			builder.Append(ATCG[(bit ? 2 : 0) + (new Random().Next() % 2)]);
+			builder.Append(ATCG[(bit ? 2 : 0) + (ATCGRandom.Next() % 2)]);
+		}
+
+		private static bool ReadStringBit(char bit)
+		{
+			switch (bit) {
+			case 'A':
+			case 'T':
+				return false;
+			case 'C':
+			case 'G':
+				return true;
+			default:
+				throw new ArgumentException("`bit` must be one of these characters: A, T, C, G!");
+			}
+		}
+
+		private static Organ FindOrgan(Organ root, Guid uid)
+		{
+			if (root.UID == uid)
+				return root;
+			foreach (var child in root.Children) {
+				var found = FindOrgan(child, uid);
+				if (found != null)
+					return found;
+			}
+			return null;
 		}
 	}
 }
