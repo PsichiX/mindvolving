@@ -22,6 +22,7 @@ namespace Mindvolving.Visualization
     {
         private GraphicsDeviceManager graphics;
         private Screen currentScreen;
+        private bool debugModeKey;
         
         public SpriteBatch SpriteBatch { get; private set; }
         public TextureManager Textures { get; private set; }
@@ -53,6 +54,7 @@ namespace Mindvolving.Visualization
         protected override void Initialize()
         {
             IsMouseVisible = true;
+            debugModeKey = false;
 
             Physics.ConvertUnits.SetDisplayUnitToSimUnitRatio(50);
 
@@ -85,6 +87,18 @@ namespace Mindvolving.Visualization
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            if (!debugModeKey && InputManager.KeyboardState.IsKeyDown(Keys.F12))
+            {
+                debugModeKey = true;
+
+                if (currentScreen is VisualizationScreen)
+                    ChangeScreen<DebugScreen>();
+                else
+                    ChangeScreen<VisualizationScreen>();
+            }
+            else if (InputManager.KeyboardState.IsKeyUp(Keys.F12))
+                debugModeKey = false;
 
             currentScreen.Update(gameTime);
 

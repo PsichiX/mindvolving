@@ -26,7 +26,6 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using FarseerPhysics.Collision.Shapes;
 using FarseerPhysics.Common;
-using FarseerPhysics.Common;
 
 namespace FarseerPhysics.Collision
 {
