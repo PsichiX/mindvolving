@@ -1,8 +1,6 @@
-﻿using System;
-using FarseerPhysics.Controllers;
+﻿using FarseerPhysics.Controllers;
 using FarseerPhysics.Common;
 using FarseerPhysics.Dynamics;
-using FarseerPhysics.Collision.Shapes;
 using Mindvolving.Organisms.Physics;
 
 namespace Mindvolving.Visualization.Engine.Controllers
@@ -24,12 +22,14 @@ namespace Mindvolving.Visualization.Engine.Controllers
 
 		public override void Update(float dt)
 		{
-			foreach (Body body in World.BodyList) {
+			foreach (Body body in World.BodyList)
+			{
 				var distance = (body.Position - Position).Length();
 				var radius = Radius;
 				if (body.UserData is OrganUserData)
 					radius += (body.UserData as OrganUserData).Organ.Radius;
-				if (distance <= radius) {
+				if (distance <= radius)
+				{
 					var factor = distance / radius;
 					body.ApplyForce(Direction * Strength * (1.0f - factor * factor));
 				}

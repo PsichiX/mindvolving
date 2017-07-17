@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Organisms\DNA.cs" />
+    <Compile Include="Organisms\DNA.IMutator.cs" />
     <Compile Include="Organisms\Muscle.cs" />
     <Compile Include="Organisms\Organ.cs" />
     <Compile Include="Organisms\Organism.cs" />

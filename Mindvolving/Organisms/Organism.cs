@@ -51,10 +51,10 @@ namespace Mindvolving.Organisms
 			GC.SuppressFinalize(this);
 		}
 
-		internal static Organism Factory(Simulation simulation, DNA dna)
+		internal static Organism Factory(Simulation simulation, DNA dna, Vector2 position)
 		{
 			var organism = new Organism(simulation);
-			organism.Root = new Organ(dna.Root.UID, organism, null, Vector2.Zero, dna.Root.Radius);
+			organism.Root = new Organ(dna.Root.UID, organism, null, position, dna.Root.Radius);
 			CreateChildrenOrgan(organism.Root, dna.Root, Vector2.Zero);
 			foreach (var muscle in dna.Muscles)
 				CreateMuscle(organism, muscle);
@@ -63,7 +63,8 @@ namespace Mindvolving.Organisms
 
 		private static void CreateChildrenOrgan(Organ root, DNA.Organ dna, Vector2 worldPos)
 		{
-			foreach (var leaf in dna.Children) {
+			foreach (var leaf in dna.Children)
+			{
 				var distance = dna.Radius + leaf.Radius + MinimumOrganDistance;
 				var angle = leaf.RadialOrientation * Math.PI / 180.0;
 				var x = (float)Math.Cos(angle) * distance;
@@ -87,7 +88,8 @@ namespace Mindvolving.Organisms
 		{
 			if (root.DNAUID == dnauid)
 				return root;
-			foreach (var child in root.Children) {
+			foreach (var child in root.Children)
+			{
 				var found = FindOrgan(child, dnauid);
 				if (found != null)
 					return found;
