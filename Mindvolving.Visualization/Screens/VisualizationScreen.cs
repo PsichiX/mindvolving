@@ -14,6 +14,8 @@ namespace Mindvolving.Visualization.Screens
             base.Initialize();
 
             worldRenderer = Visualization.CreateVisualizationComponent(() => new WorldRenderer(Visualization.World));
+
+            lastMouseState = Visualization.InputManager.MouseState;
         }
 
         public override void Update(GameTime gt)
