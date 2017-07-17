@@ -126,6 +126,22 @@ namespace Mindvolving.Visualization
             
             World.CreateOrganism(dna);
 
+            World.PhysicalWorld.AddController(new Engine.Controllers.SeaCurrentsController()
+            {
+                Direction = new Physics.Common.Vector2(1, 0),
+                Position = new Physics.Common.Vector2(0, 0),
+                Radius = 4,
+                Strength = 2
+            });
+
+            World.PhysicalWorld.AddController(new Engine.Controllers.SeaCurrentsController()
+            {
+                Direction = new Physics.Common.Vector2(-1, 0),
+                Position = new Physics.Common.Vector2(6, 0),
+                Radius = 4,
+                Strength = 2
+            });
+
             var food = World.CreateEntity<Food>();
             food.Position = new Vector2(400, 200);
 

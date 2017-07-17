@@ -94,7 +94,7 @@ namespace Mindvolving.Visualization.Renderers
             return _hasBegun;
         }
 
-        public void AddVertex(FP.Vector2 vertex, Color color, PrimitiveType primitiveType)
+        public void AddVertex(Vector2 vertex, Color color, PrimitiveType primitiveType)
         {
             if (!_hasBegun)
                 throw new InvalidOperationException("Begin must be called before AddVertex can be called.");
@@ -107,7 +107,7 @@ namespace Mindvolving.Visualization.Renderers
                 if (_triangleVertsCount >= _triangleVertices.Length)
                     FlushTriangles();
 
-                _triangleVertices[_triangleVertsCount].Position = new Vector3(vertex.ToMGVector2(), -0.1f);
+                _triangleVertices[_triangleVertsCount].Position = new Vector3(vertex, -0.1f);
                 _triangleVertices[_triangleVertsCount].Color = color;
                 _triangleVertsCount++;
             }
@@ -117,7 +117,7 @@ namespace Mindvolving.Visualization.Renderers
                 if (_lineVertsCount >= _lineVertices.Length)
                     FlushLines();
 
-                _lineVertices[_lineVertsCount].Position = new Vector3(vertex.ToMGVector2(), 0f);
+                _lineVertices[_lineVertsCount].Position = new Vector3(vertex, 0f);
                 _lineVertices[_lineVertsCount].Color = color;
                 _lineVertsCount++;
             }

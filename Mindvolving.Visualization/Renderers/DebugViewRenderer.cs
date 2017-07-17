@@ -5,16 +5,18 @@ using System.Linq;
 using System.Text;
 using FarseerPhysics.Collision;
 using FarseerPhysics.Collision.Shapes;
-using FarseerPhysics.Common;
+using FP = FarseerPhysics.Common;
 using FarseerPhysics.Controllers;
 using FarseerPhysics.Dynamics;
 using FarseerPhysics.Dynamics.Contacts;
 using FarseerPhysics.Dynamics.Joints;
 using MG = Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using FarseerPhysics;
 using Mindvolving.Visualization;
+using Mindvolving.Visualization.Engine.Controllers;
 
 namespace Mindvolving.Visualization.Renderers
 {
@@ -29,7 +31,7 @@ namespace Mindvolving.Visualization.Renderers
         private SpriteBatch _batch;
         private SpriteFont _font;
         private GraphicsDevice _device;
-        private Vector2[] _tempVertices = new Vector2[Settings.MaxPolygonVertices];
+        private FP.Vector2[] _tempVertices = new FP.Vector2[Settings.MaxPolygonVertices];
         private List<StringData> _stringData;
 
         private MG.Matrix _localProjection;
@@ -102,11 +104,11 @@ namespace Mindvolving.Visualization.Renderers
 
                 Fixture fixtureA = contact.FixtureA;
 
-                FixedArray2<PointState> state1, state2;
+                FP.FixedArray2<PointState> state1, state2;
                 Collision.GetPointStates(out state1, out state2, ref oldManifold, ref manifold);
 
-                FixedArray2<Vector2> points;
-                Vector2 normal;
+                FP.FixedArray2<FP.Vector2> points;
+                FP.Vector2 normal;
                 contact.GetWorldManifold(out normal, out points);
 
                 for (int i = 0; i < manifold.PointCount && _pointCount < MaxContactPoints; ++i)
@@ -115,8 +117,8 @@ namespace Mindvolving.Visualization.Renderers
                         _points[i] = new ContactPoint();
 
                     ContactPoint cp = _points[_pointCount];
-                    cp.Position = points[i];
-                    cp.Normal = normal;
+                    cp.Position = points[i].ToMGVector2();
+                    cp.Normal = normal.ToMGVector2();
                     cp.State = state2[i];
                     _points[_pointCount] = cp;
                     ++_pointCount;
@@ -133,7 +135,7 @@ namespace Mindvolving.Visualization.Renderers
             {
                 foreach (Body b in World.BodyList)
                 {
-                    Transform xf;
+                    FP.Transform xf;
                     b.GetTransform(out xf);
                     foreach (Fixture f in b.FixtureList)
                     {
@@ -184,12 +186,12 @@ namespace Mindvolving.Visualization.Renderers
                         PolygonShape polygon = f.Shape as PolygonShape;
                         if (polygon != null)
                         {
-                            Transform xf;
+                            FP.Transform xf;
                             body.GetTransform(out xf);
 
                             for (int i = 0; i < polygon.Vertices.Count; i++)
                             {
-                                Vector2 tmp = MathUtils.Mul(ref xf, polygon.Vertices[i]);
+                                Vector2 tmp = FP.MathUtils.Mul(ref xf, polygon.Vertices[i]).ToMGVector2();
                                 DrawPoint(tmp, 0.1f, MG.Color.Red);
                             }
                         }
@@ -233,7 +235,7 @@ namespace Mindvolving.Visualization.Renderers
             {
                 foreach (Body b in World.BodyList)
                 {
-                    Transform xf;
+                    FP.Transform xf;
                     b.GetTransform(out xf);
                     xf.p = b.WorldCenter;
                     DrawTransform(ref xf);
@@ -251,6 +253,17 @@ namespace Mindvolving.Visualization.Renderers
                     {
                         AABB container = buoyancy.Container;
                         DrawAABB(ref container, MG.Color.LightBlue);
+                    }
+
+                    SeaCurrentsController seaCurrents = controller as SeaCurrentsController;
+                    if (seaCurrents != null)
+                    {
+                        DrawCircle(seaCurrents.Position, seaCurrents.Radius, MG.Color.LightBlue);
+
+                        FP.Vector2 dir = seaCurrents.Direction;
+                        dir.Normalize();
+
+                        DrawArrow(seaCurrents.Position, seaCurrents.Position + dir * seaCurrents.Strength, 5, 8, true, Color.Green);
                     }
                 }
             }
@@ -370,24 +383,24 @@ namespace Mindvolving.Visualization.Renderers
 
             Body b1 = joint.BodyA;
             Body b2 = joint.BodyB;
-            Transform xf1;
+            FP.Transform xf1;
             b1.GetTransform(out xf1);
 
-            Vector2 x2 = Vector2.Zero;
+            FP.Vector2 x2 = FP.Vector2.Zero;
 
             // WIP David
             if (!joint.IsFixedType())
             {
-                Transform xf2;
+                FP.Transform xf2;
                 b2.GetTransform(out xf2);
                 x2 = xf2.p;
             }
 
-            Vector2 p1 = joint.WorldAnchorA;
-            Vector2 p2 = joint.WorldAnchorB;
-            Vector2 x1 = xf1.p;
+            FP.Vector2 p1 = joint.WorldAnchorA;
+            FP.Vector2 p2 = joint.WorldAnchorB;
+            FP.Vector2 x1 = xf1.p;
 
-            MG.Color color = new MG.Color(0.5f, 0.8f, 0.8f);
+            Color color = new Color(0.5f, 0.8f, 0.8f);
 
             switch (joint.JointType)
             {
@@ -396,8 +409,8 @@ namespace Mindvolving.Visualization.Renderers
                     break;
                 case JointType.Pulley:
                     PulleyJoint pulley = (PulleyJoint)joint;
-                    Vector2 s1 = b1.GetWorldPoint(pulley.LocalAnchorA);
-                    Vector2 s2 = b2.GetWorldPoint(pulley.LocalAnchorB);
+                    FP.Vector2 s1 = b1.GetWorldPoint(pulley.LocalAnchorA);
+                    FP.Vector2 s2 = b2.GetWorldPoint(pulley.LocalAnchorB);
                     DrawSegment(p1, p2, color);
                     DrawSegment(p1, s1, color);
                     DrawSegment(p2, s2, color);
@@ -411,15 +424,15 @@ namespace Mindvolving.Visualization.Renderers
                     DrawSegment(p1, p2, color);
                     DrawSegment(x2, p2, color);
 
-                    DrawSolidCircle(p2, 0.1f, Vector2.Zero, MG.Color.Red);
-                    DrawSolidCircle(p1, 0.1f, Vector2.Zero, MG.Color.Blue);
+                    DrawSolidCircle(p2, 0.1f, FP.Vector2.Zero, MG.Color.Red);
+                    DrawSolidCircle(p1, 0.1f, FP.Vector2.Zero, MG.Color.Blue);
                     break;
                 case JointType.FixedAngle:
                     //Should not draw anything.
                     break;
                 case JointType.FixedRevolute:
                     DrawSegment(x1, p1, color);
-                    DrawSolidCircle(p1, 0.1f, Vector2.Zero, MG.Color.Pink);
+                    DrawSolidCircle(p1, 0.1f, FP.Vector2.Zero, MG.Color.Pink);
                     break;
                 case JointType.FixedLine:
                     DrawSegment(x1, p1, color);
@@ -444,7 +457,7 @@ namespace Mindvolving.Visualization.Renderers
             }
         }
 
-        public void DrawShape(Fixture fixture, Transform xf, MG.Color color)
+        public void DrawShape(Fixture fixture, FP.Transform xf, MG.Color color)
         {
             switch (fixture.Shape.ShapeType)
             {
@@ -452,9 +465,9 @@ namespace Mindvolving.Visualization.Renderers
                     {
                         CircleShape circle = (CircleShape)fixture.Shape;
 
-                        Vector2 center = MathUtils.Mul(ref xf, circle.Position);
+                        FP.Vector2 center = FP.MathUtils.Mul(ref xf, circle.Position);
                         float radius = circle.Radius;
-                        Vector2 axis = MathUtils.Mul(xf.q, new Vector2(1.0f, 0.0f));
+                        FP.Vector2 axis = FP.MathUtils.Mul(xf.q, new FP.Vector2(1.0f, 0.0f));
 
                         DrawSolidCircle(center, radius, axis, color);
                     }
@@ -468,7 +481,7 @@ namespace Mindvolving.Visualization.Renderers
 
                         for (int i = 0; i < vertexCount; ++i)
                         {
-                            _tempVertices[i] = MathUtils.Mul(ref xf, poly.Vertices[i]);
+                            _tempVertices[i] = FP.MathUtils.Mul(ref xf, poly.Vertices[i]);
                         }
 
                         DrawSolidPolygon(_tempVertices, vertexCount, color);
@@ -479,8 +492,8 @@ namespace Mindvolving.Visualization.Renderers
                 case ShapeType.Edge:
                     {
                         EdgeShape edge = (EdgeShape)fixture.Shape;
-                        Vector2 v1 = MathUtils.Mul(ref xf, edge.Vertex1);
-                        Vector2 v2 = MathUtils.Mul(ref xf, edge.Vertex2);
+                        FP.Vector2 v1 = FP.MathUtils.Mul(ref xf, edge.Vertex1);
+                        FP.Vector2 v2 = FP.MathUtils.Mul(ref xf, edge.Vertex2);
                         DrawSegment(v1, v2, color);
                     }
                     break;
@@ -491,8 +504,8 @@ namespace Mindvolving.Visualization.Renderers
 
                         for (int i = 0; i < chain.Vertices.Count - 1; ++i)
                         {
-                            Vector2 v1 = MathUtils.Mul(ref xf, chain.Vertices[i]);
-                            Vector2 v2 = MathUtils.Mul(ref xf, chain.Vertices[i + 1]);
+                            FP.Vector2 v1 = FP.MathUtils.Mul(ref xf, chain.Vertices[i]);
+                            FP.Vector2 v2 = FP.MathUtils.Mul(ref xf, chain.Vertices[i + 1]);
                             DrawSegment(v1, v2, color);
                         }
                     }
@@ -500,9 +513,9 @@ namespace Mindvolving.Visualization.Renderers
             }
         }
 
-        public override void DrawPolygon(Vector2[] vertices, int count, float red, float green, float blue, bool closed = true)
+        public override void DrawPolygon(FP.Vector2[] vertices, int count, float red, float green, float blue, bool closed = true)
         {
-            DrawPolygon(vertices, count, new MG.Color(red, green, blue), closed);
+            DrawPolygon(vertices.ToMGVector2(), count, new MG.Color(red, green, blue), closed);
         }
 
         public void DrawPolygon(Vector2[] vertices, int count, MG.Color color, bool closed = true)
@@ -522,9 +535,14 @@ namespace Mindvolving.Visualization.Renderers
             }
         }
 
-        public override void DrawSolidPolygon(Vector2[] vertices, int count, float red, float green, float blue)
+        public override void DrawSolidPolygon(FP.Vector2[] vertices, int count, float red, float green, float blue)
         {
-            DrawSolidPolygon(vertices, count, new MG.Color(red, green, blue));
+            DrawSolidPolygon(vertices.ToMGVector2(), count, new MG.Color(red, green, blue));
+        }
+
+        public void DrawSolidPolygon(FP.Vector2[] vertices, int count, MG.Color color, bool outline = true)
+        {
+            DrawSolidPolygon(vertices.ToMGVector2(), count, color, outline);
         }
 
         public void DrawSolidPolygon(Vector2[] vertices, int count, MG.Color color, bool outline = true)
@@ -551,9 +569,14 @@ namespace Mindvolving.Visualization.Renderers
                 DrawPolygon(vertices, count, color);
         }
 
-        public override void DrawCircle(Vector2 center, float radius, float red, float green, float blue)
+        public override void DrawCircle(FP.Vector2 center, float radius, float red, float green, float blue)
         {
-            DrawCircle(center, radius, new MG.Color(red, green, blue));
+            DrawCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), new MG.Color(red, green, blue));
+        }
+
+        public void DrawCircle(FP.Vector2 center, float radius, MG.Color color)
+        {
+            DrawCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), color);
         }
 
         public void DrawCircle(Vector2 center, float radius, MG.Color color)
@@ -576,9 +599,14 @@ namespace Mindvolving.Visualization.Renderers
             }
         }
 
-        public override void DrawSolidCircle(Vector2 center, float radius, Vector2 axis, float red, float green, float blue)
+        public override void DrawSolidCircle(FP.Vector2 center, float radius, FP.Vector2 axis, float red, float green, float blue)
         {
-            DrawSolidCircle(center, radius, axis, new MG.Color(red, green, blue));
+            DrawSolidCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), axis.ToMGVector2(), new Color(red, green, blue));
+        }
+
+        public void DrawSolidCircle(FP.Vector2 center, float radius, FP.Vector2 axis, MG.Color color)
+        {
+            DrawSolidCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), new Vector2(axis.X, axis.Y), color);
         }
 
         public void DrawSolidCircle(Vector2 center, float radius, Vector2 axis, MG.Color color)
@@ -610,12 +638,17 @@ namespace Mindvolving.Visualization.Renderers
             DrawSegment(center, center + axis * radius, color);
         }
 
-        public override void DrawSegment(Vector2 start, Vector2 end, float red, float green, float blue)
+        public override void DrawSegment(FP.Vector2 start, FP.Vector2 end, float red, float green, float blue)
         {
             DrawSegment(start, end, new MG.Color(red, green, blue));
         }
 
-        public void DrawSegment(Vector2 start, Vector2 end, MG.Color color)
+        public void DrawSegment(FP.Vector2 start, FP.Vector2 end, Color color)
+        {
+            DrawSegment(start.ToMGVector2(), end.ToMGVector2(), color);
+        }
+
+        public void DrawSegment(Vector2 start, Vector2 end, Color color)
         {
             if (!_primitiveBatch.IsReady())
                 throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
@@ -624,19 +657,24 @@ namespace Mindvolving.Visualization.Renderers
             _primitiveBatch.AddVertex(end, color, PrimitiveType.LineList);
         }
 
-        public override void DrawTransform(ref Transform transform)
+        public override void DrawTransform(ref FP.Transform transform)
         {
             const float axisScale = 0.4f;
-            Vector2 p1 = transform.p;
+            FP.Vector2 p1 = transform.p;
 
-            Vector2 p2 = p1 + axisScale * transform.q.GetXAxis();
+            FP.Vector2 p2 = p1 + axisScale * transform.q.GetXAxis();
             DrawSegment(p1, p2, MG.Color.Red);
 
             p2 = p1 + axisScale * transform.q.GetYAxis();
             DrawSegment(p1, p2, MG.Color.Green);
         }
 
-        public void DrawPoint(Vector2 p, float size, MG.Color color)
+        public void DrawPoint(FP.Vector2 p, float size, Color color)
+        {
+            DrawPoint(p.ToMGVector2(), ConvertUnits.ToDisplayUnits(size), color);
+        }
+
+        public void DrawPoint(Vector2 p, float size, Color color)
         {
             Vector2[] verts = new Vector2[4];
             float hs = size / 2.0f;
@@ -656,6 +694,11 @@ namespace Mindvolving.Visualization.Renderers
         public void DrawString(Vector2 position, string text)
         {
             _stringData.Add(new StringData(position, text, TextColor));
+        }
+
+        public void DrawArrow(FP.Vector2 start, FP.Vector2 end, float length, float width, bool drawStartIndicator, MG.Color color)
+        {
+            DrawArrow(start.ToMGVector2(), end.ToMGVector2(), length, width, drawStartIndicator, color);
         }
 
         public void DrawArrow(Vector2 start, Vector2 end, float length, float width, bool drawStartIndicator, MG.Color color)
@@ -760,7 +803,7 @@ namespace Mindvolving.Visualization.Renderers
             // draw any strings we have
             for (int i = 0; i < _stringData.Count; i++)
             {
-                _batch.DrawString(_font, _stringData[i].Text, _stringData[i].Position.ToMGVector2(), _stringData[i].Color);
+                _batch.DrawString(_font, _stringData[i].Text, _stringData[i].Position, _stringData[i].Color);
             }
 
             // end the sprite batch effect
