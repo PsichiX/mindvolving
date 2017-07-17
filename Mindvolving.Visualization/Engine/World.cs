@@ -39,14 +39,16 @@ namespace Mindvolving.Visualization.Engine
             return entity;
         }
 
-        public OrganismEntityBuilder CreateOrganism(Organisms.DNA dna)
+        /// <summary>
+        /// Creates organism from DNA
+        /// </summary>
+        /// <returns>Organism created from DNA</returns>
+        public OrganismEntity CreateOrganism(Organisms.DNA dna)
         {
-            OrganismEntityBuilder builder = new OrganismEntityBuilder();
+            OrganismEntity organism = CreateEntity<OrganismEntity>();
+            organism.Organism = Simulation.CreateOrganism(dna);
 
-            Organisms.Organism organism = Simulation.CreateOrganism(dna);
-            builder.BeginBuilding(this, organism);
-
-            return builder;
+            return organism;
         }
 
         public T CreateDecal<T>() where T : Decal, new()

@@ -18,7 +18,7 @@ namespace Mindvolving.Visualization.Engine
         public Camera(GraphicsDevice graphicsDevice)
         {
             GraphicsDevice = graphicsDevice;
-            position = new Vector2(-GraphicsDevice.Viewport.Width / 2f, -GraphicsDevice.Viewport.Height / 2f);
+            position = new Vector2(0, 0);
             scale = 1f;
 
             Projection = Matrix.CreateOrthographicOffCenter(0f, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0f, 0f, 1f);

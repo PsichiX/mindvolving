@@ -67,14 +67,17 @@ namespace Mindvolving.Visualization.Engine.Entities
 
         private bool PhysicalBody_OnCollision(Physics.Dynamics.Fixture fixtureA, Physics.Dynamics.Fixture fixtureB, Physics.Dynamics.Contacts.Contact contact)
         {
-            var me = fixtureA.UserData == this ? fixtureA : (fixtureB.UserData == this ? fixtureB : null);
+            var userDataA = fixtureA.UserData as Organisms.Physics.IPhysicsUserData;
+            var userDataB = fixtureB.UserData as Organisms.Physics.IPhysicsUserData;
+
+            var me = userDataA.CustomData == this ? fixtureA : (userDataB.CustomData == this ? fixtureB : null);
             var other = me == fixtureA ? fixtureB : (me == fixtureB ? fixtureA : null);
 
             CollisionEventArgs args;
 
             if (me != null && other != null)
             {
-                args = new CollisionEventArgs(me.UserData, other.UserData, me, other, contact);
+                args = new CollisionEventArgs(((Organisms.Physics.IPhysicsUserData)me.UserData).CustomData, ((Organisms.Physics.IPhysicsUserData)other.UserData).CustomData, me, other, contact);
                 OnCollision(args);
 
                 return args.Result;

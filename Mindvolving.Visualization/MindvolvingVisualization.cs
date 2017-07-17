@@ -54,6 +54,8 @@ namespace Mindvolving.Visualization
         {
             IsMouseVisible = true;
 
+            Physics.ConvertUnits.SetDisplayUnitToSimUnitRatio(50);
+
             base.Initialize();
         }
 
@@ -71,7 +73,7 @@ namespace Mindvolving.Visualization
 
             Textures.LoadContent();
 
-            ChangeScreen<DebugScreen>();
+            ChangeScreen<VisualizationScreen>();
         }
 
         protected override void UnloadContent()
@@ -101,18 +103,18 @@ namespace Mindvolving.Visualization
         private void PreparePhysicsTestScene()
         {
             // Physics simulation
-            var rigidBody1 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 200), 0, BodyType.Dynamic);
-            rigidBody1.CreateFixture(new CircleShape(20, 1));
-            var rigidBody2 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(120, 20), 0, BodyType.Dynamic);
-            rigidBody2.CreateFixture(new CircleShape(30, 1));
-            var rigidBody3 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(100, 100), 0, BodyType.Static);
-            rigidBody3.CreateFixture(new CircleShape(40, 1));
-            var rigidBody4 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
-            rigidBody4.CreateFixture(new CircleShape(50, 1));
+            //var rigidBody1 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 200), 0, BodyType.Dynamic);
+            //rigidBody1.CreateFixture(new CircleShape(20, 1));
+            //var rigidBody2 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(120, 20), 0, BodyType.Dynamic);
+            //rigidBody2.CreateFixture(new CircleShape(30, 1));
+            //var rigidBody3 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(100, 100), 0, BodyType.Static);
+            //rigidBody3.CreateFixture(new CircleShape(40, 1));
+            //var rigidBody4 = BodyFactory.CreateBody(World.PhysicalWorld, new FPCommon.Vector2(200, 100), 0, BodyType.Dynamic);
+            //rigidBody4.CreateFixture(new CircleShape(50, 1));
 
-            World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
-            World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
-            World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
+            //World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
+            //World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody2, rigidBody4, rigidBody2.Position, rigidBody4.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
+            //World.PhysicalWorld.AddJoint(new DistanceJoint(rigidBody4, rigidBody3, rigidBody4.Position, rigidBody3.Position, true) { DampingRatio = 1, Frequency = 0.9f, Length = 200 });
 
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody2, rigidBody1.Position, rigidBody2.Position, true) { DampingRatio = 0f });
             //world.AddJoint(new DistanceJoint(rigidBody1, rigidBody4, rigidBody1.Position, rigidBody4.Position, true) { DampingRatio = 0f });
@@ -122,25 +124,15 @@ namespace Mindvolving.Visualization
 
             // Organism building
             var dna = new Organisms.DNA();
-            dna.Root = new Organisms.DNA.Organ();
-
-            var organismBuilder = World.CreateOrganism(dna);
-
-            organismBuilder.AddBodyPart(rigidBody1);
-            organismBuilder.AddBodyPart(rigidBody2);
-            organismBuilder.AddBodyPart(rigidBody3);
-            organismBuilder.AddBodyPart(rigidBody4);
-
-            organismBuilder.AddBone(0, 1, null);
-            organismBuilder.AddBone(1, 3, null);
-            organismBuilder.AddBone(3, 2, null);
-
-            organismBuilder.AddMuscle(0, 1, null, 50, 100);
-            organismBuilder.AddMuscle(0, 3, null, 50, 100);
-            organismBuilder.AddMuscle(1, 2, null, 50, 100);
-            organismBuilder.AddMuscle(2, 3, null, 50, 100);
-
-            organismBuilder.Build();
+            dna.Root = new Organisms.DNA.Organ() { Radius = 1 };
+            var left = new Organisms.DNA.Organ() { RadialOrientation = -90, Radius = 1 };
+            var right = new Organisms.DNA.Organ() { RadialOrientation = 90, Radius = 1 };
+            dna.Root.Children.Add(left);
+            dna.Root.Children.Add(right);
+            dna.Muscles.Add(new Organisms.DNA.Muscle() { From = dna.Root, To = left, ContractionFactor = 0.5f });
+            dna.Muscles.Add(new Organisms.DNA.Muscle() { From = dna.Root, To = right, ContractionFactor = 0.5f });
+            
+            World.CreateOrganism(dna);
 
             var food = World.CreateEntity<Food>();
             food.Position = new Vector2(400, 200);
