@@ -51,6 +51,7 @@ namespace Mindvolving.Organisms
 			To = null;
 			Joint = null;
 			ContractionFactor = 0;
+			GC.SuppressFinalize(this);
 		}
 	}
 }

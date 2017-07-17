@@ -30,6 +30,7 @@ namespace Mindvolving
 				organism.Dispose();
 			World = null;
 			m_organisms.Clear();
+			GC.SuppressFinalize(this);
 		}
 
 		// TODO: move to thread
@@ -38,9 +39,9 @@ namespace Mindvolving
 			World.Step(deltaTime);
 		}
 
-		public Organism CreateOrganism(DNA dna)
+		public Organism CreateOrganism(DNA dna, Vector2 position)
 		{
-			var organism = Organism.Factory(this, dna);
+			var organism = Organism.Factory(this, dna, position);
 			m_organisms.Add(organism);
 			return organism;
 		}

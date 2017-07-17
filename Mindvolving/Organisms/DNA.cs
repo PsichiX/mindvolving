@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Mindvolving.Organisms
 {
-	public class DNA
+	public partial class DNA
 	{
 		private static char[] ATCG = new char[] { 'A', 'T', 'C', 'G' };
 		private static Random ATCGRandom = new Random();
@@ -53,10 +53,16 @@ namespace Mindvolving.Organisms
 		public Organ Root { get; set; } = new Organ();
 		public HashSet<Muscle> Muscles { get; private set; } = new HashSet<Muscle>(new MuscleComparer());
 
+		public DNA Mutate(int points)
+		{
+			throw new NotImplementedException();
+		}
+
 		public byte[] Serialize()
 		{
 			using (var memory = new MemoryStream())
-			using (var writer = new BinaryWriter(memory)) {
+			using (var writer = new BinaryWriter(memory))
+			{
 				WriteOrgan(writer, Root);
 				writer.Write(Muscles.Count);
 				foreach (var muscle in Muscles)
@@ -68,7 +74,8 @@ namespace Mindvolving.Organisms
 		public static DNA Deserialize(byte[] data)
 		{
 			using (var memory = new MemoryStream(data))
-			using (var reader = new BinaryReader(memory)) {
+			using (var reader = new BinaryReader(memory))
+			{
 				var dna = new DNA();
 				dna.Root = ReadOrgan(reader);
 				var c = reader.ReadInt32();
@@ -162,7 +169,8 @@ namespace Mindvolving.Organisms
 
 		private static bool ReadStringBit(char bit)
 		{
-			switch (bit) {
+			switch (bit)
+			{
 			case 'A':
 			case 'T':
 				return false;
@@ -178,7 +186,8 @@ namespace Mindvolving.Organisms
 		{
 			if (root.UID == uid)
 				return root;
-			foreach (var child in root.Children) {
+			foreach (var child in root.Children)
+			{
 				var found = FindOrgan(child, uid);
 				if (found != null)
 					return found;

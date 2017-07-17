@@ -150,6 +150,8 @@ namespace Mindvolving.Visualization.Renderers
                         else
                             DrawShape(f, xf, DefaultShapeColor);
                     }
+
+                    DrawString(b.Position.ToMGVector2(), string.Format("F={0:0.000}", b.LinearVelocity.Length())); 
                 }
             }
 
@@ -798,7 +800,7 @@ namespace Mindvolving.Visualization.Renderers
             }
 
             // begin the sprite batch effect
-            _batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
+            _batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, view);
 
             // draw any strings we have
             for (int i = 0; i < _stringData.Count; i++)

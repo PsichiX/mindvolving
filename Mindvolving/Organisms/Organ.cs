@@ -37,7 +37,8 @@ namespace Mindvolving.Organisms
 			Body = new Body(organism.World, position, 0, BodyType.Dynamic, this);
 			Body.CreateFixture(new CircleShape(radius, 1), new OrganUserData() { Organ = this });
 			Body.UserData = new OrganUserData() { Organ = this };
-			if (parent != null) {
+			if (parent != null)
+			{
 				Bone = new DistanceJoint(parent.Body, Body, Vector2.Zero, Vector2.Zero);
 				Bone.UserData = new BoneUserData() { From = parent, To = this };
 				organism.World.AddJoint(Bone);
@@ -64,6 +65,7 @@ namespace Mindvolving.Organisms
 			Bone = null;
 			Radius = 0;
 			m_children.Clear();
+			GC.SuppressFinalize(this);
 		}
 	}
 }

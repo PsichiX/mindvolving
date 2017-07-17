@@ -50,6 +50,7 @@ namespace Mindvolving.Psyche
 			m_uid = null;
 			m_session = null;
 			m_pointer = IntPtr.Zero;
+			GC.SuppressFinalize(this);
 		}
 
 		public bool PerformOnLater(BrainCallback action)
