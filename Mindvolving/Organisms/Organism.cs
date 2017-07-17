@@ -68,7 +68,7 @@ namespace Mindvolving.Organisms
 				var x = (float)Math.Cos(angle) * distance;
 				var y = (float)Math.Sin(angle) * distance;
 				var position = new Vector2(x, y) + worldPos;
-				var child = new Organ(dna.UID, root.Organism, root, position, leaf.Radius);
+				var child = new Organ(leaf.UID, root.Organism, root, position, leaf.Radius);
 				root.m_children.Add(child);
 				CreateChildrenOrgan(child, leaf, position);
 			}
