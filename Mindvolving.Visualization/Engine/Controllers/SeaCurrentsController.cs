@@ -18,6 +18,7 @@ namespace Mindvolving.Visualization.Engine.Controllers
 		public SeaCurrentsController()
 			: base((ControllerType)(1 << 4))
 		{
+
 		}
 
 		public override void Update(float dt)
@@ -26,10 +27,12 @@ namespace Mindvolving.Visualization.Engine.Controllers
 			{
 				var distance = (body.Position - Position).Length();
 				var radius = Radius;
+
 				if (body.UserData is OrganUserData)
 					radius += (body.UserData as OrganUserData).Organ.Radius;
-				if (distance <= radius)
-				{
+
+                if (distance <= radius)
+                {
 					var factor = distance / radius;
 					body.ApplyForce(Direction * Strength * (1.0f - factor * factor));
 				}

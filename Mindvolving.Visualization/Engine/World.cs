@@ -4,6 +4,8 @@ using Physics = FarseerPhysics;
 using Microsoft.Xna.Framework;
 using Mindvolving.Visualization.Engine.Enviroment;
 using Mindvolving;
+using System;
+using Mindvolving.Organisms.Physics;
 
 namespace Mindvolving.Visualization.Engine
 {
@@ -105,7 +107,41 @@ namespace Mindvolving.Visualization.Engine
 			}
 		}
 
-		public void Initialize()
+
+        public Entity GetEntityAt(Vector2 position)
+        {
+            Physics.Dynamics.Body buffer;
+
+            return GetEntityAt(position, out buffer);
+        }
+
+        public Entity GetEntityAt(Vector2 position, out Physics.Dynamics.Body body)
+        {
+            Physics.Dynamics.Fixture buffer;
+
+            return GetEntityAt(position, out body, out buffer);
+        }
+
+        public Entity GetEntityAt(Vector2 position, out Physics.Dynamics.Body body, out Physics.Dynamics.Fixture fixture)
+        {
+            fixture = PhysicalWorld.TestPoint(position.ToFPVector2());
+            body = null;
+
+            if (fixture == null)
+                return null;
+
+            body = fixture.Body;
+
+            if (body == null)
+                return null;
+
+            if (body.UserData is IPhysicsUserData)
+                return ((IPhysicsUserData)body.UserData).CustomData as Entity;
+
+            return null;
+        }
+
+        public void Initialize()
 		{
 			for (int i = 0; i < entities.Count; i++)
 			{

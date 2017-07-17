@@ -10,6 +10,7 @@ namespace Mindvolving.Visualization.Engine.Input
     {
         private Dictionary<string, Keys> mappings;
         private KeyboardState lastKeyboardState;
+        private MouseState lastMouseState;
 
         public MindvolvingVisualization Visualization { get; set; }
         public Point MousePosition { get { return Mouse.GetState().Position; } }
@@ -18,6 +19,8 @@ namespace Mindvolving.Visualization.Engine.Input
 
         public event EventHandler<KeyEventArgs> KeyDown;
         public event EventHandler<KeyEventArgs> KeyUp;
+        public event EventHandler<MouseEventArgs> MouseDown;
+        public event EventHandler<MouseEventArgs> MouseUp;
 
         public InputManager()
         {
@@ -44,22 +47,32 @@ namespace Mindvolving.Visualization.Engine.Input
 
         public void Update(GameTime gt)
         {
-            KeyboardState state = KeyboardState;
+            KeyboardState keyboardState = KeyboardState;
 
             Keys[] last = lastKeyboardState.GetPressedKeys();
-            Keys[] current = state.GetPressedKeys();
+            Keys[] current = keyboardState.GetPressedKeys();
 
             foreach(Keys key in current.Except(last))
             {
-                KeyDown?.Invoke(this, new KeyEventArgs(key, state));
+                KeyDown?.Invoke(this, new KeyEventArgs(key, keyboardState));
             }
 
             foreach (Keys key in last.Except(current))
             {
-                KeyUp?.Invoke(this, new KeyEventArgs(key, state));
+                KeyUp?.Invoke(this, new KeyEventArgs(key, keyboardState));
             }
 
-            lastKeyboardState = KeyboardState;  
+            lastKeyboardState = KeyboardState;
+
+            MouseState mouseState = MouseState;
+
+            if (lastMouseState.LeftButton == ButtonState.Released && mouseState.LeftButton == ButtonState.Pressed)
+                MouseDown?.Invoke(this, new MouseEventArgs(MouseButtons.Left, mouseState));
+
+            if (lastMouseState.LeftButton == ButtonState.Pressed && mouseState.LeftButton == ButtonState.Released)
+                MouseUp?.Invoke(this, new MouseEventArgs(MouseButtons.Left, mouseState));
+
+            lastMouseState = mouseState;
         }
     }
 }
