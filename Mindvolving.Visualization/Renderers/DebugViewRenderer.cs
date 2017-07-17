@@ -28,6 +28,7 @@ namespace Mindvolving.Visualization.Renderers
     {
         //Drawing
         private DebugRenderer debugRenderer;
+        private GraphicsDevice device;
 
         //Shapes
         public Color DefaultShapeColor = new Color(0.9f, 0.7f, 0.7f);
@@ -43,13 +44,12 @@ namespace Mindvolving.Visualization.Renderers
         private ContactPoint[] _points = new ContactPoint[MaxContactPoints];
 
         //Debug panel
-        public Vector2 DebugPanelPosition = new Vector2(0, 0);
+        private StringBuilder dPStringBuilder = new StringBuilder();
+
+        //Performance graph
         private float _max;
         private float _avg;
         private float _min;
-        private StringBuilder _debugPanelSb = new StringBuilder();
-
-        //Performance graph
         public bool AdaptiveLimits = true;
         public int ValuesToGraph = 500;
         public float MinimumValue;
@@ -58,6 +58,8 @@ namespace Mindvolving.Visualization.Renderers
         public Rectangle PerformancePanelBounds = new Rectangle(330, 100, 200, 100);
         private Vector2[] _background = new Vector2[4];
         public bool Enabled = true;
+
+        public Body SelectedBody { get; set; }
 
 #if XBOX || WINDOWS_PHONE
         public const int CircleSegments = 16;
@@ -125,6 +127,32 @@ namespace Mindvolving.Visualization.Renderers
         /// </summary>
         private void DrawDebugData()
         {
+            if ((Flags & DebugViewFlags.Controllers) == DebugViewFlags.Controllers)
+            {
+                for (int i = 0; i < World.ControllerList.Count; i++)
+                {
+                    Controller controller = World.ControllerList[i];
+
+                    BuoyancyController buoyancy = controller as BuoyancyController;
+                    if (buoyancy != null)
+                    {
+                        AABB container = buoyancy.Container;
+                        debugRenderer.DrawAABB(container, Color.LightBlue);
+                    }
+
+                    SeaCurrentsController seaCurrents = controller as SeaCurrentsController;
+                    if (seaCurrents != null)
+                    {
+                        debugRenderer.DrawCircle(seaCurrents.Position, seaCurrents.Radius, Color.LightBlue);
+
+                        FP.Vector2 dir = seaCurrents.Direction;
+                        dir.Normalize();
+
+                        debugRenderer.DrawArrow(seaCurrents.Position, seaCurrents.Position + dir * seaCurrents.Strength, 5, 8, true, Color.Green);
+                    }
+                }
+            }
+
             if ((Flags & DebugViewFlags.Shape) == DebugViewFlags.Shape)
             {
                 foreach (Body b in World.BodyList)
@@ -143,9 +171,22 @@ namespace Mindvolving.Visualization.Renderers
                             debugRenderer.DrawShape(f, xf, SleepingShapeColor);
                         else
                             debugRenderer.DrawShape(f, xf, DefaultShapeColor);
-                    }
 
-                    debugRenderer.DrawString(b.Position.ToMGVector2(), string.Format("F={0:0.000}", b.LinearVelocity.Length()), TextColor); 
+                        if (f.Body == SelectedBody)
+                        {
+                            Color color = new Color(0.9f, 0.3f, 0.3f);
+                            IBroadPhase bp = World.ContactManager.BroadPhase;
+
+                            for (int t = 0; t < f.ProxyCount; ++t)
+                            {
+                                FixtureProxy proxy = f.Proxies[t];
+                                AABB aabb;
+                                bp.GetFatAABB(proxy.ProxyId, out aabb);
+
+                                debugRenderer.DrawAABB(aabb, color);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -238,34 +279,10 @@ namespace Mindvolving.Visualization.Renderers
                 }
             }
 
-            if ((Flags & DebugViewFlags.Controllers) == DebugViewFlags.Controllers)
+            if(SelectedBody != null)
             {
-                for (int i = 0; i < World.ControllerList.Count; i++)
-                {
-                    Controller controller = World.ControllerList[i];
-
-                    BuoyancyController buoyancy = controller as BuoyancyController;
-                    if (buoyancy != null)
-                    {
-                        AABB container = buoyancy.Container;
-                        debugRenderer.DrawAABB(container, Color.LightBlue);
-                    }
-
-                    SeaCurrentsController seaCurrents = controller as SeaCurrentsController;
-                    if (seaCurrents != null)
-                    {
-                        debugRenderer.DrawCircle(seaCurrents.Position, seaCurrents.Radius, Color.LightBlue);
-
-                        FP.Vector2 dir = seaCurrents.Direction;
-                        dir.Normalize();
-
-                        debugRenderer.DrawArrow(seaCurrents.Position, seaCurrents.Position + dir * seaCurrents.Strength, 5, 8, true, Color.Green);
-                    }
-                }
+                debugRenderer.DrawArrow(SelectedBody.Position, SelectedBody.Position + SelectedBody.LinearVelocity, 4, 8, false, Color.Green);
             }
-
-            if ((Flags & DebugViewFlags.DebugPanel) == DebugViewFlags.DebugPanel)
-                DrawDebugPanel();
         }
 
         private void DrawPerformanceGraph()
@@ -329,38 +346,62 @@ namespace Mindvolving.Visualization.Renderers
                 fixtureCount += World.BodyList[i].FixtureList.Count;
             }
 
-            int x = (int)DebugPanelPosition.X;
-            int y = (int)DebugPanelPosition.Y;
+            int x = 10;
+            int y = 10;
 
-
-            debugRenderer.DrawSolidRectangle(new Rectangle(0, 0, 300, 400), Color.Black);
+            debugRenderer.DrawSolidRectangle(new Rectangle(0, 0, 300, device.Viewport.Height), Color.Black);
+            debugRenderer.DrawSegment(new Vector2(300, 0), new Vector2(300, device.Viewport.Height), Color.Gray);
+            debugRenderer.DrawSegment(new Vector2(299, 0), new Vector2(299, device.Viewport.Height), Color.Gray);
 #if XBOX
             _debugPanelSb = new StringBuilder();
 #else
-            _debugPanelSb.Clear();
+            dPStringBuilder.Clear();
 #endif
-            _debugPanelSb.AppendLine("Objects:");
-            _debugPanelSb.Append("- Bodies: ").AppendLine(World.BodyList.Count.ToString());
-            _debugPanelSb.Append("- Fixtures: ").AppendLine(fixtureCount.ToString());
-            _debugPanelSb.Append("- Contacts: ").AppendLine(World.ContactList.Count.ToString());
-            _debugPanelSb.Append("- Joints: ").AppendLine(World.JointList.Count.ToString());
-            _debugPanelSb.Append("- Controllers: ").AppendLine(World.ControllerList.Count.ToString());
-            _debugPanelSb.Append("- Proxies: ").AppendLine(World.ProxyCount.ToString());
-            debugRenderer.DrawString(x, y, _debugPanelSb.ToString(), TextColor);
+            dPStringBuilder.AppendLine("Objects:");
+            dPStringBuilder.Append("- Bodies: ").AppendLine(World.BodyList.Count.ToString());
+            dPStringBuilder.Append("- Fixtures: ").AppendLine(fixtureCount.ToString());
+            dPStringBuilder.Append("- Contacts: ").AppendLine(World.ContactList.Count.ToString());
+            dPStringBuilder.Append("- Joints: ").AppendLine(World.JointList.Count.ToString());
+            dPStringBuilder.Append("- Controllers: ").AppendLine(World.ControllerList.Count.ToString());
+            dPStringBuilder.Append("- Proxies: ").AppendLine(World.ProxyCount.ToString());
+            debugRenderer.DrawString(x, y, dPStringBuilder.ToString(), TextColor);
 
 #if XBOX
             _debugPanelSb = new StringBuilder();
 #else
-            _debugPanelSb.Clear();
+            dPStringBuilder.Clear();
 #endif
-            _debugPanelSb.AppendLine("Update time:");
-            _debugPanelSb.Append("- Body: ").AppendLine(string.Format("{0} ms", World.SolveUpdateTime / TimeSpan.TicksPerMillisecond));
-            _debugPanelSb.Append("- Contact: ").AppendLine(string.Format("{0} ms", World.ContactsUpdateTime / TimeSpan.TicksPerMillisecond));
-            _debugPanelSb.Append("- CCD: ").AppendLine(string.Format("{0} ms", World.ContinuousPhysicsTime / TimeSpan.TicksPerMillisecond));
-            _debugPanelSb.Append("- Joint: ").AppendLine(string.Format("{0} ms", World.Island.JointUpdateTime / TimeSpan.TicksPerMillisecond));
-            _debugPanelSb.Append("- Controller: ").AppendLine(string.Format("{0} ms", World.ControllersUpdateTime / TimeSpan.TicksPerMillisecond));
-            _debugPanelSb.Append("- Total: ").AppendLine(string.Format("{0} ms", World.UpdateTime / TimeSpan.TicksPerMillisecond));
-            debugRenderer.DrawString(x + 110, y, _debugPanelSb.ToString(), TextColor);
+            dPStringBuilder.AppendLine("Update time:");
+            dPStringBuilder.Append("- Body: ").AppendLine(string.Format("{0} ms", World.SolveUpdateTime / TimeSpan.TicksPerMillisecond));
+            dPStringBuilder.Append("- Contact: ").AppendLine(string.Format("{0} ms", World.ContactsUpdateTime / TimeSpan.TicksPerMillisecond));
+            dPStringBuilder.Append("- CCD: ").AppendLine(string.Format("{0} ms", World.ContinuousPhysicsTime / TimeSpan.TicksPerMillisecond));
+            dPStringBuilder.Append("- Joint: ").AppendLine(string.Format("{0} ms", World.Island.JointUpdateTime / TimeSpan.TicksPerMillisecond));
+            dPStringBuilder.Append("- Controller: ").AppendLine(string.Format("{0} ms", World.ControllersUpdateTime / TimeSpan.TicksPerMillisecond));
+            dPStringBuilder.Append("- Total: ").AppendLine(string.Format("{0} ms", World.UpdateTime / TimeSpan.TicksPerMillisecond));
+            debugRenderer.DrawString(x + 110, y, dPStringBuilder.ToString(), TextColor);
+
+            Vector2 textSize = debugRenderer.Font.MeasureString(dPStringBuilder.ToString());
+
+            y += (int)textSize.Y;
+
+            debugRenderer.DrawSegment(new Vector2(0, y), new Vector2(300, y), Color.Gray);
+
+            y += 10;
+
+            if(SelectedBody != null)
+            {
+                dPStringBuilder.Clear();
+
+                dPStringBuilder.AppendLine(string.Format("Body {0} info: ", SelectedBody.BodyId));
+
+                dPStringBuilder.AppendLine(string.Format("Type: {0}", SelectedBody.BodyType.ToString()));
+                dPStringBuilder.AppendLine(string.Format("Position: [{0:0.000}, {1:0.000}]", SelectedBody.Position.X, SelectedBody.Position.Y));
+                dPStringBuilder.AppendLine(string.Format("Rotation: {0:0.000}", SelectedBody.Rotation));
+                dPStringBuilder.AppendLine(string.Format("Linear velocity: [{0:0.000}, {1:0.000}] -> {2:0.000}", SelectedBody.LinearVelocity.X, SelectedBody.LinearVelocity.Y, SelectedBody.LinearVelocity.Length()));
+                dPStringBuilder.AppendLine(string.Format("Angular velocity: {0:0.000}", SelectedBody.AngularVelocity));
+
+                debugRenderer.DrawString(x, y, dPStringBuilder.ToString(), TextColor);
+            }
         }
 
         #region DebugViewBase
@@ -438,6 +479,8 @@ namespace Mindvolving.Visualization.Renderers
 
         public void LoadContent(GraphicsDevice device, ContentManager content)
         {
+            this.device = device;
+
             debugRenderer.LoadContent(device, content);
         }
 

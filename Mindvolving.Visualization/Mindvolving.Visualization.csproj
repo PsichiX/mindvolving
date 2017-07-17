@@ -49,6 +49,8 @@
     <Compile Include="Engine\Enviroment\Bubble.cs" />
     <Compile Include="Engine\Enviroment\Decal.cs" />
     <Compile Include="Engine\Input\KeyEventArgs.cs" />
+    <Compile Include="Engine\Input\MouseButtons.cs" />
+    <Compile Include="Engine\Input\MouseEventArgs.cs" />
     <Compile Include="Engine\IWorldElement.cs" />
     <Compile Include="Engine\WorldObject.cs" />
     <Compile Include="Engine\World.cs" />

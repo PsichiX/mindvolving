@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using Mindvolving.Visualization.Engine.Input;
 using Mindvolving.Visualization.Renderers;
 
 namespace Mindvolving.Visualization.Screens
@@ -17,6 +18,8 @@ namespace Mindvolving.Visualization.Screens
             debugViewRenderer.LoadContent(Visualization.GraphicsDevice, Visualization.Content);
 
             lastMouseState = Visualization.InputManager.MouseState;
+
+            Visualization.InputManager.MouseUp += InputManager_MouseUp;
         }
 
         public override void Update(GameTime gt)
@@ -56,18 +59,18 @@ namespace Mindvolving.Visualization.Screens
         {
             base.Draw(gt);
 
-            //debugViewRenderer.BeginCustomDraw(proj, view);
-            //debugViewRenderer.DrawSolidCircle(new FPCommon.Vector2(400, 100), 20, new FPCommon.Vector2(0, 0), Color.Red);
-            //debugViewRenderer.EndCustomDraw();
-
-            //SpriteBatch.Begin();
-
-            //bodyRenderer.Draw(gameTime);
-
-
-            //SpriteBatch.End();
-
             debugViewRenderer.RenderDebugData(Visualization.Camera.Projection, Visualization.Camera.View);
+        }
+
+        private void InputManager_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                FarseerPhysics.Dynamics.Body body;
+                Visualization.World.GetEntityAt(e.GetPosition(Visualization.Camera), out body);
+
+                debugViewRenderer.SelectedBody = body;
+            }
         }
     }
 }

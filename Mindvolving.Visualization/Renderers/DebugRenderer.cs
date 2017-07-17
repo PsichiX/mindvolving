@@ -19,7 +19,6 @@ namespace Mindvolving.Visualization.Renderers
     {
         private PrimitiveBatch _primitiveBatch;
         private SpriteBatch _batch;
-        private SpriteFont _font;
         private GraphicsDevice _device;
         private FP.Vector2[] _tempVertices = new FP.Vector2[Settings.MaxPolygonVertices];
         private List<StringData> _stringData;
@@ -27,6 +26,9 @@ namespace Mindvolving.Visualization.Renderers
         private Matrix _localProjection;
         private Matrix _localView;
         private Matrix view;
+
+        public SpriteFont Font { get; private set; }
+
 
 #if XBOX || WINDOWS_PHONE
         public const int CircleSegments = 16;
@@ -402,7 +404,7 @@ namespace Mindvolving.Visualization.Renderers
             DrawPolygon(verts, 4, color);
         }
 
-        public void DrawSolidRectangle(Rectangle rectangle, Color color)
+        public void DrawSolidRectangle(Rectangle rectangle, Color color, bool outline = false)
         {
             Vector2[] verts = new Vector2[4];
             verts[0] = new Vector2(rectangle.Left, rectangle.Top);
@@ -410,7 +412,7 @@ namespace Mindvolving.Visualization.Renderers
             verts[2] = new Vector2(rectangle.Right, rectangle.Bottom);
             verts[3] = new Vector2(rectangle.Left, rectangle.Bottom);
 
-            DrawSolidPolygon(verts, 4, color, true);
+            DrawSolidPolygon(verts, 4, color, outline);
         }
 
         public void Begin(Matrix projection)
@@ -438,7 +440,7 @@ namespace Mindvolving.Visualization.Renderers
             // draw any strings we have
             for (int i = 0; i < _stringData.Count; i++)
             {
-                _batch.DrawString(_font, _stringData[i].Text, _stringData[i].Position, _stringData[i].Color);
+                _batch.DrawString(Font, _stringData[i].Text, _stringData[i].Position, _stringData[i].Color);
             }
 
             // end the sprite batch effect
@@ -453,7 +455,7 @@ namespace Mindvolving.Visualization.Renderers
             _device = device;
             _batch = new SpriteBatch(_device);
             _primitiveBatch = new PrimitiveBatch(_device, 1000);
-            _font = content.Load<SpriteFont>("Font");
+            Font = content.Load<SpriteFont>("Font");
             _stringData = new List<StringData>();
 
             _localProjection = Matrix.CreateOrthographicOffCenter(0f, _device.Viewport.Width, _device.Viewport.Height, 0f, 0f, 1f);
