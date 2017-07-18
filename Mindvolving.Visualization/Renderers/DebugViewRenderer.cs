@@ -153,6 +153,8 @@ namespace Mindvolving.Visualization.Renderers
                 }
             }
 
+            //debugRenderer.batch.Flush();
+
             if ((Flags & DebugViewFlags.Shape) == DebugViewFlags.Shape)
             {
                 foreach (Body b in World.BodyList)
@@ -189,6 +191,8 @@ namespace Mindvolving.Visualization.Renderers
                     }
                 }
             }
+
+            //debugRenderer.batch.Flush();
 
             if ((Flags & DebugViewFlags.ContactPoints) == DebugViewFlags.ContactPoints)
             {
@@ -279,9 +283,11 @@ namespace Mindvolving.Visualization.Renderers
                 }
             }
 
-            if(SelectedBody != null)
+            //debugRenderer.batch.Flush();
+
+            if (SelectedBody != null)
             {
-                debugRenderer.DrawArrow(SelectedBody.Position, SelectedBody.Position + SelectedBody.LinearVelocity, 4, 8, false, Color.Green);
+                debugRenderer.DrawArrow(SelectedBody.Position, SelectedBody.Position + SelectedBody.LinearVelocity, 4, 8, false, Color.DarkRed);
             }
         }
 
@@ -382,13 +388,23 @@ namespace Mindvolving.Visualization.Renderers
 
             Vector2 textSize = debugRenderer.Font.MeasureString(dPStringBuilder.ToString());
 
-            y += (int)textSize.Y;
+            y += (int)textSize.Y + 2;
 
+            //Batch.Breakpoint = true;
             debugRenderer.DrawSegment(new Vector2(0, y), new Vector2(300, y), Color.Gray);
+
+            Batch.Breakpoint = false;
 
             y += 10;
 
-            if(SelectedBody != null)
+#if DEBUG
+            string flushes = "Flush count: " + debugRenderer.Batch.LastFlushCount;
+            textSize = debugRenderer.Font.MeasureString(flushes.ToString());
+            debugRenderer.DrawString(x, y, flushes, TextColor);
+            y += (int)textSize.Y + 10;
+#endif
+
+            if (SelectedBody != null)
             {
                 dPStringBuilder.Clear();
 
@@ -452,13 +468,13 @@ namespace Mindvolving.Visualization.Renderers
             if (Flags == 0)
                 return;
 
-            debugRenderer.Beign(projection, view);
+            debugRenderer.Begin(projection, view);
             DrawDebugData();
             debugRenderer.End();
 
             if ((Flags & DebugViewFlags.PerformanceGraph) == DebugViewFlags.PerformanceGraph)
             {
-                debugRenderer.Beign(projection, view);
+                debugRenderer.Begin(projection, view);
                 DrawPerformanceGraph();
                 debugRenderer.End();
             }

@@ -19,6 +19,7 @@ namespace Mindvolving.Visualization.Renderers
         // hasBegun is flipped to true once Begin is called, and is used to make
         // sure users don't call End before Begin is called.
         private bool _hasBegun;
+        private Matrix projection, view;
 
         private bool _isDisposed;
         private VertexPositionColor[] _lineVertices;
@@ -26,10 +27,14 @@ namespace Mindvolving.Visualization.Renderers
         private VertexPositionColor[] _triangleVertices;
         private int _triangleVertsCount;
 
+        internal PrimitiveBatchMode Mode { get; set; }
+
         public PrimitiveBatch(GraphicsDevice graphicsDevice, int bufferSize = DefaultBufferSize)
         {
             if (graphicsDevice == null)
                 throw new ArgumentNullException("graphicsDevice");
+
+            Mode = PrimitiveBatchMode.TrianglesLinesOrder;
 
             _device = graphicsDevice;
 
@@ -79,10 +84,8 @@ namespace Mindvolving.Visualization.Renderers
             if (_hasBegun)
                 throw new InvalidOperationException("End must be called before Begin can be called again.");
 
-            //tell our basic effect to begin.
-            _basicEffect.Projection = projection;
-            _basicEffect.View = view;
-            _basicEffect.CurrentTechnique.Passes[0].Apply();
+            this.projection = projection;
+            this.view = view;
 
             // flip the error checking boolean. It's now ok to call AddVertex, Flush,
             // and End.
@@ -105,7 +108,7 @@ namespace Mindvolving.Visualization.Renderers
             if (primitiveType == PrimitiveType.TriangleList)
             {
                 if (_triangleVertsCount >= _triangleVertices.Length)
-                    FlushTriangles();
+                    Flush();
 
                 _triangleVertices[_triangleVertsCount].Position = new Vector3(vertex, -0.1f);
                 _triangleVertices[_triangleVertsCount].Color = color;
@@ -115,11 +118,30 @@ namespace Mindvolving.Visualization.Renderers
             if (primitiveType == PrimitiveType.LineList)
             {
                 if (_lineVertsCount >= _lineVertices.Length)
-                    FlushLines();
+                    Flush();
 
                 _lineVertices[_lineVertsCount].Position = new Vector3(vertex, 0f);
                 _lineVertices[_lineVertsCount].Color = color;
                 _lineVertsCount++;
+            }
+        }
+
+        public void Flush()
+        {
+            //tell our basic effect to begin.
+            _basicEffect.Projection = projection;
+            _basicEffect.View = view;
+            _basicEffect.CurrentTechnique.Passes[0].Apply();
+
+            if (Mode == PrimitiveBatchMode.TrianglesLinesOrder)
+            {
+                FlushTriangles();
+                FlushLines();
+            }
+            else if(Mode == PrimitiveBatchMode.LinesTrianglesOrder)
+            {
+                FlushLines();
+                FlushTriangles();
             }
         }
 
@@ -136,8 +158,7 @@ namespace Mindvolving.Visualization.Renderers
             }
 
             // Draw whatever the user wanted us to draw
-            FlushTriangles();
-            FlushLines();
+            Flush();
 
             _hasBegun = false;
         }

@@ -64,6 +64,10 @@
     <Compile Include="MindvolvingVisualization.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Renderers\Batch.cs" />
+    <Compile Include="Renderers\BatchItem.cs" />
+    <Compile Include="Renderers\BatchItemType.cs" />
+    <Compile Include="Renderers\BatchMode.cs" />
     <Compile Include="Renderers\DebugRenderer.cs" />
     <Compile Include="Renderers\Organisms\OrganRenderer.cs" />
     <Compile Include="Renderers\Organisms\OrganismRenderer.cs" />
@@ -75,6 +79,7 @@
     <Compile Include="Renderers\Organisms\MuscleRenderer.cs" />
     <Compile Include="Renderers\Primitive2DRenderer.cs" />
     <Compile Include="Renderers\PrimitiveBatch.cs" />
+    <Compile Include="Renderers\PrimitiveBatchMode.cs" />
     <Compile Include="Renderers\Renderer.cs" />
     <Compile Include="Renderers\WorldRenderer.cs" />
     <Compile Include="Screens\DebugScreen.cs" />

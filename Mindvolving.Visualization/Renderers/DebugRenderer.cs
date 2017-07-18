@@ -17,24 +17,16 @@ namespace Mindvolving.Visualization.Renderers
 {
     public class DebugRenderer
     {
-        private PrimitiveBatch _primitiveBatch;
-        private SpriteBatch _batch;
+        public Batch Batch { get; private set; }
+        //private SpriteBatch _batch;
         private GraphicsDevice _device;
         private FP.Vector2[] _tempVertices = new FP.Vector2[Settings.MaxPolygonVertices];
-        private List<StringData> _stringData;
 
         private Matrix _localProjection;
         private Matrix _localView;
         private Matrix view;
 
         public SpriteFont Font { get; private set; }
-
-
-#if XBOX || WINDOWS_PHONE
-        public const int CircleSegments = 16;
-#else
-        public const int CircleSegments = 32;
-#endif
 
         public DebugRenderer()
         {
@@ -189,152 +181,6 @@ namespace Mindvolving.Visualization.Renderers
             }
         }
 
-        public void DrawPolygon(Vector2[] vertices, int count, Color color, bool closed = true)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            for (int i = 0; i < count - 1; i++)
-            {
-                _primitiveBatch.AddVertex(vertices[i], color, PrimitiveType.LineList);
-                _primitiveBatch.AddVertex(vertices[i + 1], color, PrimitiveType.LineList);
-            }
-            if (closed)
-            {
-                _primitiveBatch.AddVertex(vertices[count - 1], color, PrimitiveType.LineList);
-                _primitiveBatch.AddVertex(vertices[0], color, PrimitiveType.LineList);
-            }
-        }
-
-        public void DrawSolidPolygon(FP.Vector2[] vertices, int count, Color color, bool outline = true)
-        {
-            DrawSolidPolygon(vertices.ToMGVector2(), count, color, outline);
-        }
-
-        public void DrawSolidPolygon(Vector2[] vertices, int count, Color color, bool outline = true)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            if (count == 2)
-            {
-                DrawPolygon(vertices, count, color);
-                return;
-            }
-
-            Color colorFill = color * (outline ? 0.5f : 1.0f);
-
-            for (int i = 1; i < count - 1; i++)
-            {
-                _primitiveBatch.AddVertex(vertices[0], colorFill, PrimitiveType.TriangleList);
-                _primitiveBatch.AddVertex(vertices[i], colorFill, PrimitiveType.TriangleList);
-                _primitiveBatch.AddVertex(vertices[i + 1], colorFill, PrimitiveType.TriangleList);
-            }
-
-            if (outline)
-                DrawPolygon(vertices, count, color);
-        }
-
-        public void DrawCircle(FP.Vector2 center, float radius, Color color)
-        {
-            DrawCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), color);
-        }
-
-        public void DrawCircle(Vector2 center, float radius, Color color)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            const double increment = Math.PI * 2.0 / CircleSegments;
-            double theta = 0.0;
-
-            for (int i = 0; i < CircleSegments; i++)
-            {
-                Vector2 v1 = center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
-                Vector2 v2 = center + radius * new Vector2((float)Math.Cos(theta + increment), (float)Math.Sin(theta + increment));
-
-                _primitiveBatch.AddVertex(v1, color, PrimitiveType.LineList);
-                _primitiveBatch.AddVertex(v2, color, PrimitiveType.LineList);
-
-                theta += increment;
-            }
-        }
-
-        public void DrawSolidCircle(FP.Vector2 center, float radius, FP.Vector2 axis, Color color)
-        {
-            DrawSolidCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), new Vector2(axis.X, axis.Y), color);
-        }
-
-        public void DrawSolidCircle(Vector2 center, float radius, Vector2 axis, Color color)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            const double increment = Math.PI * 2.0 / CircleSegments;
-            double theta = 0.0;
-
-            Color colorFill = color * 0.5f;
-
-            Vector2 v0 = center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
-            theta += increment;
-
-            for (int i = 1; i < CircleSegments - 1; i++)
-            {
-                Vector2 v1 = center + radius * new Vector2((float)Math.Cos(theta), (float)Math.Sin(theta));
-                Vector2 v2 = center + radius * new Vector2((float)Math.Cos(theta + increment), (float)Math.Sin(theta + increment));
-
-                _primitiveBatch.AddVertex(v0, colorFill, PrimitiveType.TriangleList);
-                _primitiveBatch.AddVertex(v1, colorFill, PrimitiveType.TriangleList);
-                _primitiveBatch.AddVertex(v2, colorFill, PrimitiveType.TriangleList);
-
-                theta += increment;
-            }
-
-            DrawCircle(center, radius, color);
-            DrawSegment(center, center + axis * radius, color);
-        }
-
-        public void DrawSegment(FP.Vector2 start, FP.Vector2 end, Color color)
-        {
-            DrawSegment(start.ToMGVector2(), end.ToMGVector2(), color);
-        }
-
-        public void DrawSegment(Vector2 start, Vector2 end, Color color)
-        {
-            if (!_primitiveBatch.IsReady())
-                throw new InvalidOperationException("BeginCustomDraw must be called before drawing anything.");
-
-            _primitiveBatch.AddVertex(start, color, PrimitiveType.LineList);
-            _primitiveBatch.AddVertex(end, color, PrimitiveType.LineList);
-        }
-
-        public void DrawPoint(FP.Vector2 p, float size, Color color)
-        {
-            DrawPoint(p.ToMGVector2(), ConvertUnits.ToDisplayUnits(size), color);
-        }
-
-        public void DrawPoint(Vector2 p, float size, Color color)
-        {
-            Vector2[] verts = new Vector2[4];
-            float hs = size / 2.0f;
-            verts[0] = p + new Vector2(-hs, -hs);
-            verts[1] = p + new Vector2(hs, -hs);
-            verts[2] = p + new Vector2(hs, hs);
-            verts[3] = p + new Vector2(-hs, hs);
-
-            DrawSolidPolygon(verts, 4, color, true);
-        }
-
-        public void DrawString(int x, int y, string text, Color color)
-        {
-            DrawString(new Vector2(x, y), text, color);
-        }
-
-        public void DrawString(Vector2 position, string text, Color color)
-        {
-            _stringData.Add(new StringData(position, text, color));
-        }
-
         public void DrawArrow(FP.Vector2 start, FP.Vector2 end, float length, float width, bool drawStartIndicator, Color color)
         {
             DrawArrow(start.ToMGVector2(), end.ToMGVector2(), length, width, drawStartIndicator, color);
@@ -393,15 +239,93 @@ namespace Mindvolving.Visualization.Renderers
             }
         }
 
+
+        public void DrawPolygon(Vector2[] vertices, int count, Color color, bool closed = true)
+        {
+            Batch.DrawPolygon(vertices, color, closed);
+        }
+
+        public void DrawSolidPolygon(FP.Vector2[] vertices, int count, Color color, bool outline = true)
+        {
+            DrawSolidPolygon(vertices.ToMGVector2(), count, color, outline);
+        }
+
+        public void DrawSolidPolygon(Vector2[] vertices, int count, Color color, bool outline = true)
+        {
+            if (count == 2)
+            {
+                DrawPolygon(vertices, count, color);
+                return;
+            }
+
+            Color colorFill = color * (outline ? 0.5f : 1.0f);
+
+            Batch.FillPolygon(vertices, color);
+
+            if (outline)
+                DrawPolygon(vertices, count, color);
+        }
+
+        public void DrawCircle(FP.Vector2 center, float radius, Color color)
+        {
+            DrawCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), color);
+        }
+
+        public void DrawCircle(Vector2 center, float radius, Color color)
+        {
+            Batch.DrawCircle(center, radius, color);
+        }
+
+        public void DrawSolidCircle(FP.Vector2 center, float radius, FP.Vector2 axis, Color color)
+        {
+            DrawSolidCircle(center.ToMGVector2(), ConvertUnits.ToDisplayUnits(radius), new Vector2(axis.X, axis.Y), color);
+        }
+
+        public void DrawSolidCircle(Vector2 center, float radius, Vector2 axis, Color color, bool outline = true)
+        {
+            Color colorFill = outline ? color * 0.5f : color;
+
+            Batch.FillCircle(center, radius, axis, colorFill);
+
+            DrawCircle(center, radius, color);
+
+            if(outline)
+                DrawSegment(center, center + axis * radius, color);
+        }
+
+        public void DrawSegment(FP.Vector2 start, FP.Vector2 end, Color color)
+        {
+            DrawSegment(start.ToMGVector2(), end.ToMGVector2(), color);
+        }
+
+        public void DrawSegment(Vector2 start, Vector2 end, Color color)
+        {
+            Batch.DrawLine(start, end, color);
+        }
+
+        public void DrawPoint(FP.Vector2 p, float size, Color color)
+        {
+            DrawPoint(p.ToMGVector2(), ConvertUnits.ToDisplayUnits(size), color);
+        }
+
+        public void DrawPoint(Vector2 p, float size, Color color)
+        {
+            Batch.FillPoint(p, size, color);
+        }
+
+        public void DrawString(int x, int y, string text, Color color)
+        {
+            DrawString(new Vector2(x, y), text, color);
+        }
+
+        public void DrawString(Vector2 position, string text, Color color)
+        {
+            Batch.DrawString(Font, text, position, color, 0, Vector2.Zero, Vector2.One, SpriteEffects.None);
+        }
+
         public void DrawRectangle(Rectangle rectangle, Color color)
         {
-            Vector2[] verts = new Vector2[4];
-            verts[0] = new Vector2(rectangle.Left, rectangle.Top);
-            verts[1] = new Vector2(rectangle.Right, rectangle.Top);
-            verts[2] = new Vector2(rectangle.Right, rectangle.Bottom);
-            verts[3] = new Vector2(rectangle.Left, rectangle.Bottom);
-
-            DrawPolygon(verts, 4, color);
+            Batch.DrawRectangle(rectangle, color);
         }
 
         public void DrawSolidRectangle(Rectangle rectangle, Color color, bool outline = false)
@@ -415,69 +339,35 @@ namespace Mindvolving.Visualization.Renderers
             DrawSolidPolygon(verts, 4, color, outline);
         }
 
+
         public void Begin(Matrix projection)
         {
-            Beign(projection, Matrix.Identity);
+            Begin(projection, Matrix.Identity);
         }
 
-        public void Beign(Matrix projection, Matrix view)
+        public void Begin(Matrix projection, Matrix view)
         {
             this.view = view;
+            _device.RasterizerState = RasterizerState.CullNone;
+            _device.DepthStencilState = DepthStencilState.None;
 
-            _primitiveBatch.Begin(projection, view);
+            Batch.Begin(BatchMode.Full, projection, view);
         }
 
         public void End()
         {
-            _device.RasterizerState = RasterizerState.CullNone;
-            _device.DepthStencilState = DepthStencilState.None;
-
-            _primitiveBatch.End();
-
-            // begin the sprite batch effect
-            _batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, null, null, null, null, view);
-
-            // draw any strings we have
-            for (int i = 0; i < _stringData.Count; i++)
-            {
-                _batch.DrawString(Font, _stringData[i].Text, _stringData[i].Position, _stringData[i].Color);
-            }
-
-            // end the sprite batch effect
-            _batch.End();
-
-            _stringData.Clear();
+            Batch.End();
         }
 
         public void LoadContent(GraphicsDevice device, ContentManager content)
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _device = device;
-            _batch = new SpriteBatch(_device);
-            _primitiveBatch = new PrimitiveBatch(_device, 1000);
+            Batch = new Batch(device);
             Font = content.Load<SpriteFont>("Font");
-            _stringData = new List<StringData>();
 
             _localProjection = Matrix.CreateOrthographicOffCenter(0f, _device.Viewport.Width, _device.Viewport.Height, 0f, 0f, 1f);
             _localView = Matrix.Identity;
         }
-
-        #region Nested type: StringData
-
-        private struct StringData
-        {
-            public Color Color;
-            public string Text;
-            public Vector2 Position;
-
-            public StringData(Vector2 position, string text, Color color)
-            {
-                Position = position;
-                Text = text;
-                Color = color;
-            }
-        }
-
-        #endregion
     }
 }
